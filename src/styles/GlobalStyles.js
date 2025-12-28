@@ -1,0 +1,73 @@
+import { createGlobalStyle } from 'styled-components';
+
+const GlobalStyles = createGlobalStyle`
+:root{
+  --background: hsl(0 0% 0%);
+    --foreground: hsl(0 0% 100%);
+    --muted: hsl(0 0% 15%);
+    --muted-foreground: hsl(0 0% 50%);
+    --border: hsl(0 0% 20%);
+    --grain-opacity: 0.03;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: "JetBrains Mono", monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: antialiased;
+  &::selection {
+    background-color: var(--foreground);
+    color: var(--background);
+  }
+}
+
+
+
+@keyframes grain {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  10% {
+    transform: translate(-5%, -10%);
+  }
+  20% {
+    transform: translate(-15%, 5%);
+  }
+  30% {
+    transform: translate(7%, -25%);
+  }
+  40% {
+    transform: translate(-5%, 25%);
+  }
+  50% {
+    transform: translate(-15%, 10%);
+  }
+  60% {
+    transform: translate(15%, 0%);
+  }
+  70% {
+    transform: translate(0%, 15%);
+  }
+  80% {
+    transform: translate(3%, 35%);
+  }
+  90% {
+    transform: translate(-10%, 10%);
+  }
+}
+
+
+
+
+
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+
+`;
+
+export default GlobalStyles;
