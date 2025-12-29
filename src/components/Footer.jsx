@@ -222,8 +222,38 @@ const CopyrightText = styled.p`
 
 function Footer() {
   const { isUnlocked } = useDrop();
-  const { email, setEmail, message, setMessage, passcode, setPasscode } =
-    useLanding();
+  const {
+    email,
+    setEmail,
+    message,
+    setMessage,
+    passcode,
+    setPasscode,
+    isShaking,
+    setIsShaking,
+  } = useLanding();
+
+  function submitPasscode(e) {
+    e.preventDefault();
+
+    if (passcode.trim().toUpperCase() === 'SPARTIZEN24') {
+      setMessage('ACCESS GRANTED. REDIRECTING...');
+    } else {
+      setIsShaking(true);
+      setMessage('ACCESS DENIED. INVALID PASSCODE.');
+      setTimeout(() => setIsShaking(false), 500);
+    }
+  }
+
+  function handleEmailSubmit(e) {
+    e.preventDefault();
+    if (!email.includes('@')) {
+      setMessage('ERROR: INVALID EMAIL ADDRESS.');
+      return;
+    }
+    setMessage('WAITLIST JOINED. STAND BY.');
+    setEmail('');
+  }
 
   return (
     <FooterContainer>
@@ -232,7 +262,7 @@ function Footer() {
           HAVE A PASSWORD?
         </Subtitle>
 
-        <OracleForm>
+        <OracleForm onSubmit={submitPasscode}>
           <Input
             type="password"
             autoComplete="off"
@@ -259,7 +289,7 @@ function Footer() {
           Be the first to receive the password when the collection drops.
         </WaitlistDescription>
 
-        <WaitlistForm>
+        <WaitlistForm onSubmit={handleEmailSubmit}>
           <EmailInput
             placeholder="YOUR EMAIL"
             id="email"

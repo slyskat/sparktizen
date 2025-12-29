@@ -7,6 +7,7 @@ const Container = styled.div`
   aspect-ratio: 3/4;
   background-color: hsl(var(--bg-secondary));
   overflow: hidden;
+  border: 1px solid #262626;
   cursor: ${(props) => (props.$isAvailable ? 'pointer' : 'not-allowed')};
 `;
 
