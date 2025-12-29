@@ -7,7 +7,7 @@ import { grain } from '../styles/Animations';
 const Container = styled.div`
   position: relative;
   min-height: 100vh;
-  background-color: var(--background);
+  background-color: hsl(var(--bg-primary));
 `;
 
 const BGNoise = styled.div`

@@ -5,7 +5,7 @@ import { Lock } from 'lucide-react';
 const Container = styled.div`
   position: relative;
   aspect-ratio: 3/4;
-  background-color: hsl(0 0% 10%);
+  background-color: hsl(var(--bg-secondary));
   overflow: hidden;
   cursor: ${(props) => (props.$isAvailable ? 'pointer' : 'not-allowed')};
 `;
@@ -53,10 +53,10 @@ const BottomGradient = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 1rem;
+  padding: 0.75rem;
   background: linear-gradient(
     to top,
-    hsla(var(--background) / 0.8),
+    hsl(var(--bg-background) / 0.8),
     transparent
   );
   pointer-events: none;
@@ -65,7 +65,7 @@ const BottomGradient = styled.div`
 const ProductName = styled.p`
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.75rem;
-  color: var(--muted-foreground);
+  color: hsl(var(--text-secondary));
   letter-spacing: 0.05em;
   text-transform: uppercase;
 `;
@@ -77,42 +77,44 @@ const CenterOverlay = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: hsla(var(--background) / 0.6);
+  background-color: hsla(var(--bg-background) / 0.6);
   opacity: 0;
   transition: opacity 0.3s ease;
 
-  ${(props) =>
+  /* ${(props) =>
     props.$shouldShow &&
     css`
       ${Container}:hover & {
         opacity: 1;
       }
-    `}
+    `} */
+
+  ${Container}:hover && {
+    opacity: 1;
+  }
 `;
 
 const LockIconContainer = styled.div`
   margin-bottom: 0.75rem;
-  color: var(--foreground);
-
-  & > svg {
-    stroke-width: 1.5;
-  }
+  color: hsl(var(--text-primary));
 `;
 
 const LockText = styled.span`
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.75rem;
-  color: var(--foreground);
-  letter-spacing: 0.05em;
+  line-height: 1rem;
+  color: hsl(var(--text-primary));
+  letter-spacing: 0.25em;
   text-transform: uppercase;
 `;
 
 const CornerIconContainer = styled.div`
   position: absolute;
   top: 0.75rem;
+  right: 0.75rem;
   opacity: 0.4;
   pointer-events: none;
-  color: var(--foreground);
+  color: hsl(var(--text-primary));
 `;
 function ProductCard({ product }) {
   const { isUnlocked } = useDrop();
@@ -129,7 +131,7 @@ function ProductCard({ product }) {
       {isLocked && (
         <CenterOverlay>
           <LockIconContainer>
-            <Lock size={32} />
+            <Lock size={32} strokeWidth={1.5} />
           </LockIconContainer>
           <LockText>Locked</LockText>
         </CenterOverlay>

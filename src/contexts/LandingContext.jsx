@@ -3,7 +3,26 @@ import { createContext, useContext, useState } from 'react';
 const LandingContext = createContext();
 
 function LandingProvider({ children }) {
-  return <LandingContext.Provider>{children}</LandingContext.Provider>;
+  const [passcode, setPasscode] = useState('');
+  const [email, setEmail] = useState('');
+  const [isShaking, setIsShaking] = useState(false);
+  const [message, setMessage] = useState('');
+  return (
+    <LandingContext.Provider
+      value={{
+        email,
+        setEmail,
+        passcode,
+        setPasscode,
+        isShaking,
+        setIsShaking,
+        message,
+        setMessage,
+      }}
+    >
+      {children}
+    </LandingContext.Provider>
+  );
 }
 
 function useLanding() {

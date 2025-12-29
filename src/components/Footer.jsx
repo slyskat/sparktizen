@@ -3,6 +3,7 @@ import { shake } from '../styles/Animations';
 import { useDrop } from '../contexts/DropContext';
 import { Subtitle } from '../ui/Subtitle';
 import { ArrowRight, Lock } from 'lucide-react';
+import { useLanding } from '../contexts/LandingContext';
 
 const FooterContainer = styled.footer`
   width: 100%;
@@ -22,6 +23,7 @@ const FooterContainer = styled.footer`
 `;
 
 const FormContainer = styled.div`
+  width: 100%;
   max-width: 28rem;
   margin: 0 auto;
   text-align: center;
@@ -33,11 +35,18 @@ const FormContainer = styled.div`
 `;
 
 const OracleForm = styled.form`
+  /* border-bottom: 1px solid hsl(var(--border)); */
+  /* width: 100%; */
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  /* border-bottom: 1px solid var(--border);
-  padding-bottom: 0.5rem; */
+  border-bottom: 1px solid #262626;
+  padding-bottom: 0.5rem;
+
+  &:focus-within {
+    border-bottom: 1px solid hsl(var(--text-primary));
+    outline: none;
+  }
 
   ${(props) =>
     props.$isShaking &&
@@ -54,7 +63,6 @@ const Input = styled.input`
   width: 100%;
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--border);
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -62,15 +70,11 @@ const Input = styled.input`
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.875rem;
   line-height: 1.25rem;
-  color: var(--foreground);
-
-  &:focus {
-    border-color: var(--foreground);
-    outline: none;
-  }
+  color: hsl(var(--text-primary));
+  outline: none;
 
   &::placeholder {
-    color: var(--muted-foreground);
+    color: hsl(var(--text-secondary));
     opacity: 0.5;
   }
 
@@ -84,12 +88,12 @@ const SubmitButton = styled.button`
   background: transparent;
   border: none;
   padding: 0.5rem;
-  color: var(--muted-foreground);
+  color: hsl(var(--text-secondary));
   cursor: pointer;
   transition: color 0.2s;
 
   &:hover {
-    color: var(--foreground);
+    color: hsl(var(--text-secondary));
   }
 `;
 
@@ -97,17 +101,19 @@ const Separator = styled.div`
   max-width: 20rem;
   margin: 0 auto;
   height: 1px;
-  background-color: var(--border);
+  background-color: hsl(var(--text-primary));
+  z-index: 100;
 `;
 
 const WaitlistContainer = styled.div`
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(23, 23, 23, 0.3);
   width: 100%;
   padding: 2rem;
   max-width: 32rem;
   margin: 0 auto;
   backdrop-filter: blur(4px);
+  position: relative;
 
   @media (min-width: 640px) {
     padding: 2.5rem;
@@ -121,21 +127,22 @@ const WaitlistHeader = styled.div`
   gap: 0.5rem;
   margin-bottom: 1rem;
 
-  /* Icon styling inside */
   & > svg {
-    color: var(--muted-foreground);
+    color: rgb(115, 115, 115);
   }
 `;
 
 const WaitlistTitle = styled.h2`
   font-family: 'Anton', sans-serif;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
   letter-spacing: -0.025em;
-  color: var(--foreground);
+  color: hsl(var(--text-primary));
   margin: 0;
 
   @media (min-width: 640px) {
-    font-size: 2rem;
+    font-size: 1.5rem;
+    line-height: 2rem;
   }
 `;
 
@@ -153,21 +160,34 @@ const WaitlistDescription = styled(Subtitle)`
   text-align: center;
   margin-bottom: 1.5rem;
   opacity: 0.7;
+  text-transform: none;
 `;
 
 const EmailInput = styled(Input)`
-  padding: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 0;
   text-align: left;
-  border-color: rgba(255, 255, 255, 0.5);
+  border: none;
+  border-bottom: 1px solid #404040;
+  background: transparent;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  transition: color cubic-bezier(0.4, 0, 0.2, 1) 300ms;
 
   &:focus {
-    border-color: var(--foreground);
+    border-color: hsl(var(--text-primary));
+  }
+
+  &::placeholder {
+    color: rgb(64, 64, 64);
   }
 `;
 
 const AccessButton = styled.button`
-  background: var(--foreground);
-  color: var(--background);
+  background: hsl(var(--text-primary));
+  color: hsl(var(--bg-background));
   border: none;
   padding: 0.75rem 2rem;
   font-size: 0.75rem;
@@ -175,10 +195,13 @@ const AccessButton = styled.button`
   font-weight: bold;
   cursor: pointer;
   white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
   transition: transform 0.2s ease;
 
   &:hover {
     transform: translateY(-2px);
+    background-color: rgb(229, 229, 229 / 1);
   }
 
   &:active {
@@ -189,7 +212,7 @@ const AccessButton = styled.button`
 const CopyrightText = styled.p`
   font-family: 'JetBrains Mono', monospace;
   font-size: 9px;
-  color: var(--muted-foreground);
+  color: hsl(var(--text-secondary));
   opacity: 0.4;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -199,6 +222,9 @@ const CopyrightText = styled.p`
 
 function Footer() {
   const { isUnlocked } = useDrop();
+  const { email, setEmail, message, setMessage, passcode, setPasscode } =
+    useLanding();
+
   return (
     <FooterContainer>
       <FormContainer>
@@ -211,6 +237,9 @@ function Footer() {
             type="password"
             autoComplete="off"
             placeholder="ENTER PASSWORD"
+            id="password"
+            value={passcode}
+            onChange={(e) => setPasscode(e.target.value)}
           />
           <SubmitButton type="submit" aria-label="Submit code">
             <ArrowRight size={18} strokeWidth={1.5} />
@@ -231,7 +260,12 @@ function Footer() {
         </WaitlistDescription>
 
         <WaitlistForm>
-          <EmailInput />
+          <EmailInput
+            placeholder="YOUR EMAIL"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
           <AccessButton>GET ACCESS</AccessButton>
         </WaitlistForm>
       </WaitlistContainer>

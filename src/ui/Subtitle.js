@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const Subtitle = styled.p`
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px;
-  color: var(--muted-foreground);
+  color: #525252;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   margin-bottom: 2rem;

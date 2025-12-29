@@ -2,15 +2,27 @@ import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyles = createGlobalStyle`
 :root{
-  --background: hsl(0 0% 0%);
-    --foreground: hsl(0 0% 100%);
-    --muted: hsl(0 0% 15%);
-    --muted-foreground: hsl(0 0% 50%);
-    --border: hsl(0 0% 20%);
+  --bg-primary: 0 0% 0%;
+  --bg-secondary:0 0% 15%;
+
+
+    --text-primary: 0 0% 100%;
+    --text-secondary: 0 0% 50%;
+
+
+    --border: 0 0% 20%;
     --grain-opacity: 0.03;
 }
 
-body {
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow-x: hidden;
   background-color: var(--background);
   color: var(--foreground);
   font-family: "JetBrains Mono", monospace;
@@ -21,6 +33,16 @@ body {
     color: var(--background);
   }
 }
+
+a {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  ul {
+    list-style: none;
+  }
+
 
 
 

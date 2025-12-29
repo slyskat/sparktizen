@@ -16,7 +16,7 @@ const StyledHeader = styled.header`
 const LockContainer = styled.div`
   margin-bottom: 1rem;
   transition: opacity 0.5s ease;
-  color: var(--foreground);
+  color: hsl(var(--text-primary));
   opacity: ${(props) => (props.$isUnlocked ? 0 : 0.5)};
   animation: ${(props) =>
     !props.$isUnlocked &&
@@ -29,10 +29,11 @@ const Title = styled.h1`
   font-family: 'Anton', sans-serif;
   font-size: clamp(3rem, 15vw, 12rem);
   line-height: 0.85;
-  letter-spacing: -0.05em;
-  color: var(--foreground);
+  letter-spacing: -0.03em;
+  color: hsl(var(--text-primary));
   text-align: center;
   animation: ${textFlicker} 5s ease-in-out infinite;
+  margin-bottom: 1rem;
 `;
 
 function Header() {

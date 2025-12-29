@@ -6,11 +6,11 @@ const NAV = styled.nav`
   left: 0;
   right: 0;
   z-index: 40;
-  background: var(--background);
+  background: hsl(var(--bg-background));
   opacity: 0.8;
   --webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid hsl(var(--border));
 `;
 
 const Container = styled.div`
@@ -28,7 +28,7 @@ const FlexContainer = styled.div`
 
 const Logo = styled.a`
   font-family: 'Anton', sans-serif;
-  color: var(--foreground);
+  color: hsl(var(--text-primary));
 `;
 
 function NavBar() {

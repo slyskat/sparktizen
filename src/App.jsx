@@ -9,6 +9,7 @@ import Checkout from './pages/Checkout';
 import OrderReceipt from './pages/OrderReceipt';
 import PageNotFound from './pages/PageNotFound';
 import { DropProvider } from './contexts/DropContext';
+import { LandingProvider } from './contexts/LandingContext';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,18 +25,19 @@ function App() {
       <ReactQueryDevtools initialIsOpen={false} />
       <GlobalStyles />
       <DropProvider>
-        x
-        <BrowserRouter>
-          <Routes>
-            <Route element={<MainLayout />}>
-              <Route path="/" element={<Landing />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/order/:id" element={<OrderReceipt />} />
-            </Route>
+        <LandingProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route element={<MainLayout />}>
+                <Route path="/" element={<Landing />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/order/:id" element={<OrderReceipt />} />
+              </Route>
 
-            <Route path="*" element={<PageNotFound />} />
-          </Routes>
-        </BrowserRouter>
+              <Route path="*" element={<PageNotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </LandingProvider>
       </DropProvider>
     </QueryClientProvider>
   );
