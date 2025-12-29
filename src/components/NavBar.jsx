@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { useDrop } from '../contexts/DropContext';
 
 const NAV = styled.nav`
   position: fixed;
@@ -29,14 +30,33 @@ const FlexContainer = styled.div`
 const Logo = styled.a`
   font-family: 'Anton', sans-serif;
   color: hsl(var(--text-primary));
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+`;
+
+const RightSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+`;
+
+const TimerContainer = styled.div`
+  display: hidden;
+
+  @media (min-width: 748px) {
+    display: block;
+  }
 `;
 
 function NavBar() {
+  const { isUnlocked } = useDrop();
   return (
     <NAV>
       <Container>
         <FlexContainer>
           <Logo href="/">SPARKTIZEN</Logo>
+
+          {isUnlocked && <div></div>}
         </FlexContainer>
       </Container>
     </NAV>
