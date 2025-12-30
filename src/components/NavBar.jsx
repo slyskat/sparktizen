@@ -56,7 +56,13 @@ function NavBar() {
         <FlexContainer>
           <Logo href="/">SPARKTIZEN</Logo>
 
-          {isUnlocked && <div></div>}
+          {isUnlocked && (
+            <RightSection>
+              <TimerContainer>
+                <SessionTimer />
+              </TimerContainer>
+            </RightSection>
+          )}
         </FlexContainer>
       </Container>
     </NAV>

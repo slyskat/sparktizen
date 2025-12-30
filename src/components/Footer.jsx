@@ -236,7 +236,7 @@ function Footer() {
   function submitPasscode(e) {
     e.preventDefault();
 
-    if (passcode.trim().toUpperCase() === 'SPARTIZEN24') {
+    if (passcode.trim().toUpperCase() === 'SPARKTIZEN24') {
       setMessage('ACCESS GRANTED. REDIRECTING...');
     } else {
       setIsShaking(true);

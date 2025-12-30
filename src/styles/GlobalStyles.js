@@ -9,9 +9,11 @@ const GlobalStyles = createGlobalStyle`
     --text-primary: 0 0% 100%;
     --text-secondary: 0 0% 50%;
 
+    --warning: 0 84% 60%;
+
 
     --border: 0 0% 20%;
-    --grain-opacity: 0.03;
+    --grain-opacity: 0.03; 
 }
 
 *, *::before, *::after {
