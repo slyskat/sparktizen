@@ -2,6 +2,9 @@ import { ShoppingBag } from 'lucide-react';
 import styled from 'styled-components';
 
 const CartButton = styled.button`
+  background: none;
+  border: none;
+  outline: none;
   position: relative;
   display: flex;
   align-items: center;
@@ -16,8 +19,8 @@ const CartButton = styled.button`
 
 const CartCount = styled.span`
   position: absolute;
-  top: 1;
-  right: 1;
+  top: 1px;
+  right: 1px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -25,11 +28,11 @@ const CartCount = styled.span`
 
 const CartLabel = styled.span`
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.875rem;
+  font-size: 1rem;
   line-height: 1.25rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  display: hidden;
+  display: none;
 
   @media (min-width: 640px) {
     display: inline;

@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 
 const DropContext = createContext();
 
-const CODE = 'SPARkTIZEN24';
+const CODE = 'SPARKTIZEN24';
 const DURATION_PER_SESSION = 10 * 60;
 
 function DropProvider({ children }) {
@@ -40,7 +40,7 @@ function DropProvider({ children }) {
 
           return prev - 1;
         });
-      });
+      }, 1000);
 
       return () => clearInterval(interval);
     },

@@ -4,6 +4,8 @@ import { useDrop } from '../contexts/DropContext';
 import { Subtitle } from '../ui/Subtitle';
 import { ArrowRight, Lock } from 'lucide-react';
 import { useLanding } from '../contexts/LandingContext';
+import toast from 'react-hot-toast';
+import { toastStyle } from '../utils/toastStyle';
 
 const FooterContainer = styled.footer`
   width: 100%;
@@ -221,37 +223,51 @@ const CopyrightText = styled.p`
 `;
 
 function Footer() {
-  const { isUnlocked } = useDrop();
-  const {
-    email,
-    setEmail,
-    message,
-    setMessage,
-    passcode,
-    setPasscode,
-    isShaking,
-    setIsShaking,
-  } = useLanding();
+  const { unlockStore } = useDrop();
+  const { email, setEmail, passcode, setPasscode, setIsShaking } = useLanding();
 
   function submitPasscode(e) {
     e.preventDefault();
 
-    if (passcode.trim().toUpperCase() === 'SPARKTIZEN24') {
-      setMessage('ACCESS GRANTED. REDIRECTING...');
+    if (!passcode.trim()) {
+      setIsShaking(true);
+      setTimeout(() => setIsShaking(false), 500);
+      toast.error('ACCESS DENIED', {
+        description: 'Enter your oracle code to proceed.',
+        style: toastStyle,
+      });
+      return;
+    }
+
+    const success = unlockStore(passcode);
+    if (success) {
+      toast.success('ACCESS GRANTED', {
+        description: 'Welcome to the drop. Your session has begun.',
+        style: { ...toastStyle, border: '1px solid hsl(0 0% 40%)' },
+      });
     } else {
       setIsShaking(true);
-      setMessage('ACCESS DENIED. INVALID PASSCODE.');
       setTimeout(() => setIsShaking(false), 500);
+      toast.error('INVALID CODE', {
+        description: 'This passcode is not recognized.',
+        style: toastStyle,
+      });
     }
   }
 
   function handleEmailSubmit(e) {
     e.preventDefault();
-    if (!email.includes('@')) {
-      setMessage('ERROR: INVALID EMAIL ADDRESS.');
+    if (!email.includes('@') || !email.trim()) {
+      toast.error('INVALID EMAIL', {
+        description: 'Please enter a valid email address.',
+        style: toastStyle,
+      });
       return;
     }
-    setMessage('WAITLIST JOINED. STAND BY.');
+    toast.success('WAITLIST JOINED', {
+      description: "You'll be notified when the drop goes live.",
+      style: { ...toastStyle, border: '1px solid hsl(0 0% 30%)' },
+    });
     setEmail('');
   }
 
@@ -299,8 +315,6 @@ function Footer() {
           <AccessButton>GET ACCESS</AccessButton>
         </WaitlistForm>
       </WaitlistContainer>
-
-      <CopyrightText>© 2025 SPARTIZEN. ALL RIGHTS RESERVED.</CopyrightText>
     </FooterContainer>
   );
 }

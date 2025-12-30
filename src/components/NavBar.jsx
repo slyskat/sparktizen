@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import { useDrop } from '../contexts/DropContext';
+import SessionTimer from './SessionTimer';
+import CartBag from '../ui/CartBag';
 
 const NAV = styled.nav`
   position: fixed;
@@ -37,7 +39,7 @@ const Logo = styled.a`
 const RightSection = styled.div`
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
 `;
 
 const TimerContainer = styled.div`
@@ -61,6 +63,7 @@ function NavBar() {
               <TimerContainer>
                 <SessionTimer />
               </TimerContainer>
+              <CartBag />
             </RightSection>
           )}
         </FlexContainer>

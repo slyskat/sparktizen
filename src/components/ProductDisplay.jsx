@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { getProducts } from '../services/apiProducts';
 import ProductCard from './ProductCard';
+import { useDrop } from '../contexts/DropContext';
 
 const StyledSection = styled.section`
   width: 100%;
@@ -35,49 +36,50 @@ const GridContainer = styled.div`
   }
 `;
 
-const products = [
-  {
-    id: 1,
-    name: 'TACTICAL VEST',
-    price: 320,
-    image: '/placeholder.svg',
-    status: 'AVAILABLE',
-  },
-  {
-    id: 2,
-    name: 'GRAPHIC JERSEY',
-    price: 180,
-    image: '/placeholder.svg',
-    status: 'AVAILABLE',
-  },
-  {
-    id: 3,
-    name: 'CARGO PANTS',
-    price: 240,
-    image: '/placeholder.svg',
-    status: 'AVAILABLE',
-  },
-  {
-    id: 4,
-    name: 'UTILITY HOODIE',
-    price: 280,
-    image: '/placeholder.svg',
-    status: 'AVAILABLE',
-  },
-];
+// const products = [
+//   {
+//     id: 1,
+//     name: 'TACTICAL VEST',
+//     price: 320,
+//     image: '/placeholder.svg',
+//     status: 'AVAILABLE',
+//   },
+//   {
+//     id: 2,
+//     name: 'GRAPHIC JERSEY',
+//     price: 180,
+//     image: '/placeholder.svg',
+//     status: 'AVAILABLE',
+//   },
+//   {
+//     id: 3,
+//     name: 'CARGO PANTS',
+//     price: 240,
+//     image: '/placeholder.svg',
+//     status: 'AVAILABLE',
+//   },
+//   {
+//     id: 4,
+//     name: 'UTILITY HOODIE',
+//     price: 280,
+//     image: '/placeholder.svg',
+//     status: 'AVAILABLE',
+//   },
+// ];
 
 function ProductDisplay() {
-  // const { data: products, isLoading } = useQuery({
-  //   queryKey: ['products'],
-  //   queryFn: getProducts,
-  // });
+  const { isUnlocked } = useDrop();
+  const { data: products, isLoading } = useQuery({
+    queryKey: ['products'],
+    queryFn: getProducts,
+  });
 
-  // console.log(products);
+  const displayedProducts = isUnlocked ? products : products?.slice(0, 4);
 
   return (
     <StyledSection>
       <GridContainer>
-        {products?.map((product) => (
+        {displayedProducts?.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </GridContainer>

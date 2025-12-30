@@ -10,6 +10,7 @@ import OrderReceipt from './pages/OrderReceipt';
 import PageNotFound from './pages/PageNotFound';
 import { DropProvider } from './contexts/DropContext';
 import { LandingProvider } from './contexts/LandingContext';
+import { Toaster } from 'react-hot-toast';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,6 +25,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
       <GlobalStyles />
+      <Toaster position="bottom-right" reverseOrder={false} />
       <DropProvider>
         <LandingProvider>
           <BrowserRouter>
