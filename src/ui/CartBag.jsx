@@ -1,5 +1,6 @@
 import { ShoppingBag } from 'lucide-react';
 import styled from 'styled-components';
+import { useCart } from '../contexts/CartContext';
 
 const CartButton = styled.button`
   background: none;
@@ -40,8 +41,9 @@ const CartLabel = styled.span`
 `;
 
 function CartBag() {
+  const { setIsCartOpen } = useCart();
   return (
-    <CartButton>
+    <CartButton onClick={() => setIsCartOpen((isCartOpen) => !isCartOpen)}>
       <ShoppingBag size={20} strokeWidth={1.5} />
       <CartLabel>Cart</CartLabel>
     </CartButton>

@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components';
 import { useDrop } from '../contexts/DropContext';
 import { Lock, ShoppingBag } from 'lucide-react';
+import { useCart } from '../contexts/CartContext';
 
 const Container = styled.div`
   position: relative;
@@ -191,6 +192,7 @@ const AddButton = styled.button`
 
 function ProductCard({ product }) {
   const { isUnlocked } = useDrop();
+  const { AddItemToCart } = useCart();
   const isAvailable = isUnlocked && product.status === 'AVAILABLE';
   const status = !isUnlocked ? 'LOCKED' : product.status;
   const isLocked = !isUnlocked || product.status === 'LOCKED';
@@ -230,7 +232,7 @@ function ProductCard({ product }) {
 
       {isAvailable && (
         <AddButtonContainer>
-          <AddButton>
+          <AddButton onClick={() => AddItemToCart(product)}>
             <ShoppingBag size={14} strokeWidth={1.5} />
             ADD TO CART
           </AddButton>

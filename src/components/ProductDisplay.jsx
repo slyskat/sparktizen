@@ -69,7 +69,7 @@ const GridContainer = styled.div`
 
 function ProductDisplay() {
   const { isUnlocked } = useDrop();
-  const { data: products, isLoading } = useQuery({
+  const { data: products } = useQuery({
     queryKey: ['products'],
     queryFn: getProducts,
   });
