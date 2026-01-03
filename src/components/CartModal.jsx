@@ -153,12 +153,12 @@ const CheckoutButton = styled.button`
   font-weight: 600;
   letter-spacing: 0.02em;
   transition: all 0.3s ease-out;
+  font-size: 1rem;
+
   width: 100%;
   padding: 1rem 0;
-  font-size: 1rem;
   &:hover {
     background-color: hsl(var(--text-primary) / 0.9);
-    letter-spacing: 0.25em;
   }
 
   &:active {
@@ -182,10 +182,10 @@ function CartModal() {
 
   return createPortal(
     <Overlay $isOpen={isCartOpen} onClick={() => setIsCartOpen(false)}>
-      <Modal $isOpen={isCartOpen}>
+      <Modal $isOpen={isCartOpen} onClick={(e) => e.stopPropagation()}>
         <Header>
           <Title>YOUR CART</Title>
-          <CloseButton>
+          <CloseButton onClick={() => setIsCartOpen(false)}>
             <X size={24} strokeWidth={1.5} />
           </CloseButton>
         </Header>

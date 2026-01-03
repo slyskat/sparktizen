@@ -209,7 +209,7 @@ function ProductCard({ product, important }) {
       />
       <BottomGradient>
         <ProductName>{product.name}</ProductName>
-        {isAvailable && <ProductPrice>${product.price}</ProductPrice>}
+        {isAvailable && <ProductPrice>₦{product.price}</ProductPrice>}
       </BottomGradient>
 
       {isLocked && (

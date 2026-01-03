@@ -12,8 +12,8 @@ const ItemContainer = styled.div`
 `;
 
 const Thumbnail = styled.div`
-  width: 20px;
-  height: 20px;
+  width: 80px;
+  height: 120px;
   background: hsl(var(--bg-secondary));
   flex-shrink: 0;
 `;
