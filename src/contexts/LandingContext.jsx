@@ -6,7 +6,6 @@ function LandingProvider({ children }) {
   const [passcode, setPasscode] = useState('');
   const [email, setEmail] = useState('');
   const [isShaking, setIsShaking] = useState(false);
-  const [message, setMessage] = useState('');
   return (
     <LandingContext.Provider
       value={{
