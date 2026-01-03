@@ -69,7 +69,7 @@ const GridContainer = styled.div`
 
 function ProductDisplay() {
   const { isUnlocked } = useDrop();
-  const { data: products, isLoading } = useQuery({
+  const { data: products } = useQuery({
     queryKey: ['products'],
     queryFn: getProducts,
   });
@@ -79,8 +79,12 @@ function ProductDisplay() {
   return (
     <StyledSection>
       <GridContainer>
-        {displayedProducts?.map((product) => (
-          <ProductCard key={product.id} product={product} />
+        {displayedProducts?.map((product, index) => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            important={index < 4}
+          />
         ))}
       </GridContainer>
     </StyledSection>

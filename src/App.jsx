@@ -11,6 +11,7 @@ import PageNotFound from './pages/PageNotFound';
 import { DropProvider } from './contexts/DropContext';
 import { LandingProvider } from './contexts/LandingContext';
 import { Toaster } from 'react-hot-toast';
+import { CartProvider } from './contexts/CartContext';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,17 +29,19 @@ function App() {
       <Toaster position="bottom-right" reverseOrder={false} />
       <DropProvider>
         <LandingProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route element={<MainLayout />}>
-                <Route path="/" element={<Landing />} />
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/order/:id" element={<OrderReceipt />} />
-              </Route>
+          <CartProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route element={<MainLayout />}>
+                  <Route path="/" element={<Landing />} />
+                  <Route path="/checkout" element={<Checkout />} />
+                  <Route path="/order/:id" element={<OrderReceipt />} />
+                </Route>
 
-              <Route path="*" element={<PageNotFound />} />
-            </Routes>
-          </BrowserRouter>
+                <Route path="*" element={<PageNotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </CartProvider>
         </LandingProvider>
       </DropProvider>
     </QueryClientProvider>

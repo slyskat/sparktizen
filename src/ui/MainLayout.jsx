@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import NavBar from '../components/NavBar';
 import { grain } from '../styles/Animations';
+import CartModal from '../components/CartModal';
 
 const Container = styled.div`
   position: relative;
@@ -40,6 +41,7 @@ function MainLayout() {
       <Main>
         <Outlet />
       </Main>
+      <CartModal />
     </Container>
   );
 }

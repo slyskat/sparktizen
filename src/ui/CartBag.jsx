@@ -1,5 +1,6 @@
 import { ShoppingBag } from 'lucide-react';
 import styled from 'styled-components';
+import { useCart } from '../contexts/CartContext';
 
 const CartButton = styled.button`
   background: none;
@@ -24,6 +25,10 @@ const CartCount = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
+  background: hsl(var(--text-primary));
+  color: hsl(var(--bg-primary));
+  width: 20px;
+  height: 20px;
 `;
 
 const CartLabel = styled.span`
@@ -40,10 +45,13 @@ const CartLabel = styled.span`
 `;
 
 function CartBag() {
+  const { setIsCartOpen, items } = useCart();
+  const itemsCount = items.length;
   return (
-    <CartButton>
+    <CartButton onClick={() => setIsCartOpen((isCartOpen) => !isCartOpen)}>
       <ShoppingBag size={20} strokeWidth={1.5} />
       <CartLabel>Cart</CartLabel>
+      {itemsCount > 0 && <CartCount>{itemsCount}</CartCount>}
     </CartButton>
   );
 }

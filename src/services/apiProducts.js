@@ -10,3 +10,17 @@ export async function getProducts() {
 
   return data;
 }
+
+export function getOptimizedImageUrl(url, width = 500) {
+  if (!url) return '';
+
+  if (url.includes('/render/image')) {
+    return `${url}&width=${width}`;
+  }
+
+  const transformedUrl = url.replace(
+    '/object/public/',
+    '/render/image/public/'
+  );
+  return `${transformedUrl}?width=${width}&resize=contain&quality=80`;
+}

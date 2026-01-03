@@ -10,6 +10,8 @@ function DropProvider({ children }) {
   const [timeLeft, setTimeLeft] = useState(DURATION_PER_SESSION);
   const [isExpired, setIsExpired] = useState(false);
 
+  const isWarning = timeLeft <= 120 && timeLeft > 0;
+
   function unlockStore(passcode) {
     if (passcode.trim().toUpperCase() === CODE) {
       setIsUnlocked(true);
@@ -48,7 +50,14 @@ function DropProvider({ children }) {
   );
   return (
     <DropContext.Provider
-      value={{ isUnlocked, timeLeft, isExpired, unlockStore, resetSession }}
+      value={{
+        isUnlocked,
+        timeLeft,
+        isExpired,
+        unlockStore,
+        resetSession,
+        isWarning,
+      }}
     >
       {children}
     </DropContext.Provider>

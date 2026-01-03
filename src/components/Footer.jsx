@@ -6,6 +6,7 @@ import { ArrowRight, Lock } from 'lucide-react';
 import { useLanding } from '../contexts/LandingContext';
 import toast from 'react-hot-toast';
 import { toastStyle } from '../utils/toastStyle';
+import { CopyrightText, CopyrightTextContainer } from '../ui/CopyrightText';
 
 const FooterContainer = styled.footer`
   width: 100%;
@@ -211,17 +212,6 @@ const AccessButton = styled.button`
   }
 `;
 
-const CopyrightText = styled.p`
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
-  color: hsl(var(--text-secondary));
-  opacity: 0.4;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  text-align: center;
-  padding-top: 1rem;
-`;
-
 function Footer() {
   const { unlockStore } = useDrop();
   const { email, setEmail, passcode, setPasscode, setIsShaking } = useLanding();
@@ -315,6 +305,10 @@ function Footer() {
           <AccessButton>GET ACCESS</AccessButton>
         </WaitlistForm>
       </WaitlistContainer>
+
+      <CopyrightTextContainer>
+        <CopyrightText>© 2025 SPARKTIZEN. ALL RIGHTS RESERVED.</CopyrightText>
+      </CopyrightTextContainer>
     </FooterContainer>
   );
 }

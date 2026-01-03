@@ -10,3 +10,8 @@ export const CopyrightText = styled.p`
   text-align: center;
   padding-top: 1rem;
 `;
+
+export const CopyrightTextContainer = styled.div`
+  text-align: center;
+  padding: 1rem;
+`;
