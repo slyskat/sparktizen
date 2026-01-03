@@ -25,6 +25,10 @@ const CartCount = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
+  background: hsl(var(--text-primary));
+  color: hsl(var(--bg-primary));
+  width: 20px;
+  height: 20px;
 `;
 
 const CartLabel = styled.span`
@@ -41,11 +45,13 @@ const CartLabel = styled.span`
 `;
 
 function CartBag() {
-  const { setIsCartOpen } = useCart();
+  const { setIsCartOpen, items } = useCart();
+  const itemsCount = items.length;
   return (
     <CartButton onClick={() => setIsCartOpen((isCartOpen) => !isCartOpen)}>
       <ShoppingBag size={20} strokeWidth={1.5} />
       <CartLabel>Cart</CartLabel>
+      {itemsCount > 0 && <CartCount>{itemsCount}</CartCount>}
     </CartButton>
   );
 }

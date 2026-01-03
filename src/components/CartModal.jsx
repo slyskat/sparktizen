@@ -2,6 +2,9 @@ import { createPortal } from 'react-dom';
 import styled, { css } from 'styled-components';
 import { useCart } from '../contexts/CartContext';
 import { X } from 'lucide-react';
+import CartDisplay from './CartDisplay';
+import { useDrop } from '../contexts/DropContext';
+import SessionTimer from './SessionTimer';
 
 const Overlay = styled.div`
   position: fixed;
@@ -72,8 +75,110 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
+const CartItems = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-y: auto;
+`;
+
+const StyledFooter = styled.footer`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  background-color: hsl(var(--border));
+  border-top: 1px solid hsl(var(--border));
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+`;
+
+const SessionStatus = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  border: 1px solid hsl(var(--border));
+
+  ${(props) => {
+    if (props.$isWarning) {
+      return css`
+        border: 1px solid hsl(0 80% 50% /0.5);
+        background: hsl(0 80% 50% / 0.1);
+      `;
+    } else {
+      return css`
+        border: 1px solid hsl(var(--border));
+      `;
+    }
+  }}
+`;
+
+const SessionText = styled.span`
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: hsl(var(--text-secondary));
+`;
+
+const SubtotalWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const SubtotalHeader = styled.span`
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: hsl(var(--text-secondary));
+`;
+
+const Subtotal = styled.span`
+  font-family: 'Anton', sans-serif;
+  font-size: 2rem;
+  color: hsl(var(--text-primary));
+`;
+
+const CheckoutButton = styled.button`
+  background-color: hsl(var(--text-primary));
+  color: hsl(var(--bg-primary));
+  text-transform: uppercase;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: all 0.3s ease-out;
+  width: 100%;
+  padding: 1rem 0;
+  font-size: 1rem;
+  &:hover {
+    background-color: hsl(var(--text-primary) / 0.9);
+    letter-spacing: 0.25em;
+  }
+
+  &:active {
+    transform: scaleY(0.98);
+  }
+
+  ${(props) => {
+    if (props.$isDisabled) {
+      return css`
+        opacity: 0.5;
+        cursor: not-allowed;
+      `;
+    }
+  }}
+`;
+
 function CartModal() {
-  const { isCartOpen, setIsCartOpen } = useCart();
+  const { isCartOpen, setIsCartOpen, items, getSubtotal } = useCart();
+  const { isWarning } = useDrop();
+  const isDisabled = items.length === 0;
 
   return createPortal(
     <Overlay $isOpen={isCartOpen} onClick={() => setIsCartOpen(false)}>
@@ -84,6 +189,28 @@ function CartModal() {
             <X size={24} strokeWidth={1.5} />
           </CloseButton>
         </Header>
+
+        <CartItems>
+          {items?.map((item) => (
+            <CartDisplay key={item.id} item={item} />
+          ))}
+        </CartItems>
+
+        <StyledFooter>
+          <SessionStatus $isWarning={isWarning}>
+            <SessionText>Session expires in</SessionText>
+            <SessionTimer />
+          </SessionStatus>
+
+          <SubtotalWrapper>
+            <SubtotalHeader>Subtotal</SubtotalHeader>
+            <Subtotal>{getSubtotal()}</Subtotal>
+          </SubtotalWrapper>
+
+          <CheckoutButton $isDisabled={isDisabled}>
+            Proceed to checkout
+          </CheckoutButton>
+        </StyledFooter>
       </Modal>
     </Overlay>,
     document.getElementById('cart-portal')

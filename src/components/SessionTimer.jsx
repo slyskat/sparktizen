@@ -29,8 +29,7 @@ const StyledDiv = styled.div`
 `;
 
 function SessionTimer() {
-  const { timeLeft, isExpired } = useDrop();
-  const isWarning = timeLeft <= 120 && timeLeft > 0;
+  const { timeLeft, isExpired, isWarning } = useDrop();
 
   return (
     <StyledDiv $isExpired={isExpired} $isWarning={isWarning}>

@@ -30,10 +30,12 @@ html, body {
   font-family: "JetBrains Mono", monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: antialiased;
-  &::selection {
-    background-color: var(--foreground);
-    color: var(--background);
-  }
+ 
+}
+
+body::selection {
+  background: hsl(var(--text-primary));
+  color: hsl(var(--bg-primary));
 }
 
 a {

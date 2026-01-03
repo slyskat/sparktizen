@@ -79,8 +79,12 @@ function ProductDisplay() {
   return (
     <StyledSection>
       <GridContainer>
-        {displayedProducts?.map((product) => (
-          <ProductCard key={product.id} product={product} />
+        {displayedProducts?.map((product, index) => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            important={index < 4}
+          />
         ))}
       </GridContainer>
     </StyledSection>

@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components';
 import { useDrop } from '../contexts/DropContext';
 import { Lock, ShoppingBag } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
+import { getOptimizedImageUrl } from '../services/apiProducts';
 
 const Container = styled.div`
   position: relative;
@@ -190,9 +191,9 @@ const AddButton = styled.button`
   }
 `;
 
-function ProductCard({ product }) {
+function ProductCard({ product, important }) {
   const { isUnlocked } = useDrop();
-  const { AddItemToCart } = useCart();
+  const { addItemToCart } = useCart();
   const isAvailable = isUnlocked && product.status === 'AVAILABLE';
   const status = !isUnlocked ? 'LOCKED' : product.status;
   const isLocked = !isUnlocked || product.status === 'LOCKED';
@@ -200,7 +201,12 @@ function ProductCard({ product }) {
 
   return (
     <Container $isAvailable={isAvailable}>
-      <ProductImage src={product.image} alt={product.name} $status={status} />
+      <ProductImage
+        src={getOptimizedImageUrl(product.image, 400)}
+        alt={product.name}
+        $status={status}
+        loading={important ? 'eager' : 'lazy'}
+      />
       <BottomGradient>
         <ProductName>{product.name}</ProductName>
         {isAvailable && <ProductPrice>${product.price}</ProductPrice>}
@@ -232,7 +238,7 @@ function ProductCard({ product }) {
 
       {isAvailable && (
         <AddButtonContainer>
-          <AddButton onClick={() => AddItemToCart(product)}>
+          <AddButton onClick={() => addItemToCart(product)}>
             <ShoppingBag size={14} strokeWidth={1.5} />
             ADD TO CART
           </AddButton>
