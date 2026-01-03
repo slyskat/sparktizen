@@ -15,8 +15,6 @@ function LandingProvider({ children }) {
         setPasscode,
         isShaking,
         setIsShaking,
-        message,
-        setMessage,
       }}
     >
       {children}
