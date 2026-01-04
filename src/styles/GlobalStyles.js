@@ -25,8 +25,8 @@ const GlobalStyles = createGlobalStyle`
 html, body {
   height: 100%;
   overflow-x: hidden;
-  background-color: var(--background);
-  color: var(--foreground);
+  background-color: hsl(var(--bg-primary));
+  color: hsl(var(--text-primary));
   font-family: "JetBrains Mono", monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: antialiased;

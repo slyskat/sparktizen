@@ -233,7 +233,7 @@ function Footer() {
     if (success) {
       toast.success('ACCESS GRANTED', {
         description: 'Welcome to the drop. Your session has begun.',
-        style: { ...toastStyle, border: '1px solid hsl(0 0% 40%)' },
+        style: { ...toastStyle, border: '1px solid hsl(0 0% 40% )' },
       });
     } else {
       setIsShaking(true);

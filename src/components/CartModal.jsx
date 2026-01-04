@@ -5,6 +5,8 @@ import { X } from 'lucide-react';
 import CartDisplay from './CartDisplay';
 import { useDrop } from '../contexts/DropContext';
 import SessionTimer from './SessionTimer';
+import { useNavigate } from 'react-router-dom';
+import { formatCurrency } from '../utils/helpers';
 
 const Overlay = styled.div`
   position: fixed;
@@ -79,7 +81,7 @@ const CartItems = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  overflow-y: auto;
+  overflow: auto;
 `;
 
 const StyledFooter = styled.footer`
@@ -153,12 +155,12 @@ const CheckoutButton = styled.button`
   font-weight: 600;
   letter-spacing: 0.02em;
   transition: all 0.3s ease-out;
+  font-size: 1rem;
+
   width: 100%;
   padding: 1rem 0;
-  font-size: 1rem;
   &:hover {
     background-color: hsl(var(--text-primary) / 0.9);
-    letter-spacing: 0.25em;
   }
 
   &:active {
@@ -176,22 +178,28 @@ const CheckoutButton = styled.button`
 `;
 
 function CartModal() {
-  const { isCartOpen, setIsCartOpen, items, getSubtotal } = useCart();
+  const { isCartOpen, setIsCartOpen, cart, getSubtotal } = useCart();
   const { isWarning } = useDrop();
-  const isDisabled = items.length === 0;
+  const isDisabled = cart.length === 0;
+  const navigate = useNavigate();
+
+  function proceedToCheckoout() {
+    setIsCartOpen(false);
+    navigate('/checkout');
+  }
 
   return createPortal(
     <Overlay $isOpen={isCartOpen} onClick={() => setIsCartOpen(false)}>
-      <Modal $isOpen={isCartOpen}>
+      <Modal $isOpen={isCartOpen} onClick={(e) => e.stopPropagation()}>
         <Header>
           <Title>YOUR CART</Title>
-          <CloseButton>
+          <CloseButton onClick={() => setIsCartOpen(false)}>
             <X size={24} strokeWidth={1.5} />
           </CloseButton>
         </Header>
 
         <CartItems>
-          {items?.map((item) => (
+          {cart?.map((item) => (
             <CartDisplay key={item.id} item={item} />
           ))}
         </CartItems>
@@ -204,10 +212,10 @@ function CartModal() {
 
           <SubtotalWrapper>
             <SubtotalHeader>Subtotal</SubtotalHeader>
-            <Subtotal>{getSubtotal()}</Subtotal>
+            <Subtotal>{formatCurrency(getSubtotal())}</Subtotal>
           </SubtotalWrapper>
 
-          <CheckoutButton $isDisabled={isDisabled}>
+          <CheckoutButton $isDisabled={isDisabled} onClick={proceedToCheckoout}>
             Proceed to checkout
           </CheckoutButton>
         </StyledFooter>
