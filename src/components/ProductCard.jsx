@@ -3,6 +3,9 @@ import { useDrop } from '../contexts/DropContext';
 import { Lock, ShoppingBag } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { getOptimizedImageUrl } from '../services/apiProducts';
+import { formatCurrency } from '../utils/helpers';
+import toast from 'react-hot-toast';
+import { toastStyle } from '../utils/toastStyle';
 
 const Container = styled.div`
   position: relative;
@@ -59,7 +62,7 @@ const BottomGradient = styled.div`
   padding: 0.75rem;
   background: linear-gradient(
     to top,
-    hsl(var(--bg-background) / 0.8),
+    hsl(var(--bg-primary) / 0.8),
     transparent
   );
   pointer-events: none;
@@ -199,6 +202,16 @@ function ProductCard({ product, important }) {
   const isLocked = !isUnlocked || product.status === 'LOCKED';
   const isSoldOut = product.status === 'SOLD_OUT';
 
+  function handleClick() {
+    if (product.status === 'AVAILABLE') {
+      addItemToCart(product);
+      toast.success('ADDED TO CART', {
+        description: `${product.name} has been added to cart`,
+        style: { ...toastStyle, border: '1px solid hsl(0 0% 40% )' },
+      });
+    }
+  }
+
   return (
     <Container $isAvailable={isAvailable}>
       <ProductImage
@@ -209,7 +222,9 @@ function ProductCard({ product, important }) {
       />
       <BottomGradient>
         <ProductName>{product.name}</ProductName>
-        {isAvailable && <ProductPrice>₦{product.price}</ProductPrice>}
+        {isAvailable && (
+          <ProductPrice>{formatCurrency(product.price)}</ProductPrice>
+        )}
       </BottomGradient>
 
       {isLocked && (
@@ -238,7 +253,7 @@ function ProductCard({ product, important }) {
 
       {isAvailable && (
         <AddButtonContainer>
-          <AddButton onClick={() => addItemToCart(product)}>
+          <AddButton onClick={handleClick}>
             <ShoppingBag size={14} strokeWidth={1.5} />
             ADD TO CART
           </AddButton>

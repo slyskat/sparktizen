@@ -1,13 +1,14 @@
 import { createContext, useContext, useState } from 'react';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 const CartContext = createContext();
 
 function CartProvider({ children }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [items, setItems] = useState([]);
+  const [cart, setCart] = useLocalStorage('cart', []);
 
   function addItemToCart(newItem) {
-    setItems((items) => {
+    setCart((items) => {
       const existingItem = items.find((item) => item.id === newItem.id);
       if (existingItem) {
         return items.map((item) =>
@@ -22,7 +23,7 @@ function CartProvider({ children }) {
   }
 
   function removeItemFromCart(id) {
-    setItems((items) => items.filter((item) => item.id !== id));
+    setCart((items) => items.filter((item) => item.id !== id));
   }
 
   function updateQuantity(id, quantity) {
@@ -30,21 +31,21 @@ function CartProvider({ children }) {
       removeItemFromCart(id);
       return;
     }
-    setItems((items) =>
+    setCart((items) =>
       items.map((item) => (item.id === id ? { ...item, quantity } : item))
     );
   }
 
   function clearCart() {
-    setItems([]);
+    setCart([]);
   }
 
   function getCartCount() {
-    return items.reduce((total, item) => total + item.quantity, 0);
+    return cart.reduce((total, item) => total + item.quantity, 0);
   }
 
   function getSubtotal() {
-    return items.reduce((total, item) => total + item.price * item.quantity, 0);
+    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   }
 
   return (
@@ -53,8 +54,8 @@ function CartProvider({ children }) {
         isCartOpen,
         setIsCartOpen,
         addItemToCart,
-        items,
-        setItems,
+        cart,
+        setCart,
         removeItemFromCart,
         updateQuantity,
         clearCart,

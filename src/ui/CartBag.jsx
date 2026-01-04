@@ -45,13 +45,13 @@ const CartLabel = styled.span`
 `;
 
 function CartBag() {
-  const { setIsCartOpen, items } = useCart();
-  const itemsCount = items.length;
+  const { setIsCartOpen, cart } = useCart();
+  const cartCount = cart.length;
   return (
     <CartButton onClick={() => setIsCartOpen((isCartOpen) => !isCartOpen)}>
       <ShoppingBag size={20} strokeWidth={1.5} />
       <CartLabel>Cart</CartLabel>
-      {itemsCount > 0 && <CartCount>{itemsCount}</CartCount>}
+      {cartCount > 0 && <CartCount>{cartCount}</CartCount>}
     </CartButton>
   );
 }

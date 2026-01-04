@@ -2,6 +2,7 @@ import { Minus, Plus, Trash2 } from 'lucide-react';
 import styled from 'styled-components';
 import QuantityButton from '../ui/QuantityButton';
 import { useCart } from '../contexts/CartContext';
+import { formatCurrency } from '../utils/helpers';
 
 const ItemContainer = styled.div`
   display: flex;
@@ -84,7 +85,7 @@ function CartDisplay({ item }) {
       <CartItemDetailsContainer>
         <div>
           <CartItemLabel>{item.name}</CartItemLabel>
-          <CartItemPrice>{item.price}</CartItemPrice>
+          <CartItemPrice>{formatCurrency(item.price)}</CartItemPrice>
         </div>
 
         <QuantityActionContainer>
