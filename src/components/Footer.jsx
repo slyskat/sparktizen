@@ -7,6 +7,7 @@ import { useLanding } from '../contexts/LandingContext';
 import toast from 'react-hot-toast';
 import { toastStyle } from '../utils/toastStyle';
 import { CopyrightText, CopyrightTextContainer } from '../ui/CopyrightText';
+import { useState } from 'react';
 
 const FooterContainer = styled.footer`
   width: 100%;
@@ -215,9 +216,12 @@ const AccessButton = styled.button`
 function Footer() {
   const { unlockStore } = useDrop();
   const { email, setEmail, passcode, setPasscode, setIsShaking } = useLanding();
+  const [isChecking, setIsChecking] = useState(false);
 
-  function submitPasscode(e) {
+  async function submitPasscode(e) {
     e.preventDefault();
+
+    if (isChecking) return;
 
     if (!passcode.trim()) {
       setIsShaking(true);
@@ -229,7 +233,11 @@ function Footer() {
       return;
     }
 
-    const success = unlockStore(passcode);
+    setIsChecking(true);
+
+    const success = await unlockStore(passcode);
+    setIsChecking(false);
+
     if (success) {
       toast.success('ACCESS GRANTED', {
         description: 'Welcome to the drop. Your session has begun.',

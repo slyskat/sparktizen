@@ -1,30 +1,92 @@
 import { createContext, useContext, useEffect, useState } from 'react';
+import { calculateSecondsLeft, getStoredExpiryTime } from '../utils/helpers';
+import supabase from '../services/supabase';
 
 const DropContext = createContext();
 
-const CODE = 'SPARKTIZEN24';
+const CODE = import.meta.env.VITE_DROP_CODE;
 const DURATION_PER_SESSION = 10 * 60;
+const STORAGE_KEY = 'sparktizen_session_expiry';
 
 function DropProvider({ children }) {
-  const [isUnlocked, setIsUnlocked] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(DURATION_PER_SESSION);
+  const [isUnlocked, setIsUnlocked] = useState(function () {
+    const expiry = getStoredExpiryTime(STORAGE_KEY);
+    return expiry !== null && calculateSecondsLeft(expiry) > 0;
+  });
+  const [timeLeft, setTimeLeft] = useState(function () {
+    const expiry = getStoredExpiryTime(STORAGE_KEY);
+    return calculateSecondsLeft(expiry);
+  });
   const [isExpired, setIsExpired] = useState(false);
 
   const isWarning = timeLeft <= 120 && timeLeft > 0;
 
-  function unlockStore(passcode) {
-    if (passcode.trim().toUpperCase() === CODE) {
-      setIsUnlocked(true);
-      setTimeLeft(DURATION_PER_SESSION);
-      setIsExpired(false);
-      return true;
+  useEffect(
+    function () {
+      if (!isUnlocked) return;
+
+      function tick() {
+        const expiryTime = getStoredExpiryTime(STORAGE_KEY);
+
+        if (!expiryTime) {
+          setIsUnlocked(false);
+          return;
+        }
+
+        const seconds = calculateSecondsLeft(expiryTime);
+
+        if (seconds <= 0) {
+          setIsExpired(true);
+          setTimeLeft(0);
+        } else {
+          setIsExpired(false);
+          setTimeLeft(seconds);
+        }
+      }
+
+      tick();
+
+      const timerId = setInterval(tick, 1000);
+
+      return () => clearInterval(timerId);
+    },
+    [isUnlocked]
+  );
+
+  async function unlockStore(passcode) {
+    if (!passcode || passcode.trim().length === 0) return false;
+
+    try {
+      const { data, error } = await supabase.rpc('check_drop_code', {
+        attempt: passcode,
+      });
+
+      if (error) {
+        console.error('RPC Error:', error);
+        return false;
+      }
+
+      if (data === true) {
+        const now = Date.now();
+        const futureExpiry = now + DURATION_PER_SESSION * 1000;
+
+        localStorage.setItem(STORAGE_KEY, futureExpiry.toString());
+
+        setIsUnlocked(true);
+        setIsExpired(false);
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error('Unlock Error:', err);
+      return false;
     }
-    return false;
   }
 
   function resetSession() {
+    localStorage.removeItem(STORAGE_KEY);
     setIsUnlocked(false);
-    setTimeLeft(DURATION_PER_SESSION);
+    setTimeLeft(0);
     setIsExpired(false);
   }
 

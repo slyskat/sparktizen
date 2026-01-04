@@ -27,6 +27,7 @@ export default [
         setInterval: 'readonly',
         clearInterval: 'readonly',
         alert: 'readonly',
+        localStorage: 'readonly',
       },
     },
     plugins: {

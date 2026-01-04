@@ -14,3 +14,15 @@ export function formatCurrency(amount) {
     minimumFractionDigits: 2,
   }).format(amount);
 }
+
+export function getStoredExpiryTime(STORAGE_KEY) {
+  const storedTime = localStorage.getItem(STORAGE_KEY);
+  return storedTime ? parseInt(storedTime, 10) : null;
+}
+
+export function calculateSecondsLeft(expiryTime) {
+  if (!expiryTime) return 0;
+  const now = Date.now();
+  const secondsLeft = Math.ceil((expiryTime - now) / 1000);
+  return secondsLeft > 0 ? secondsLeft : 0;
+}
