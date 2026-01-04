@@ -36,5 +36,9 @@
     "prettier": "^3.7.4",
     "vite": "^7.2.4",
     "vite-plugin-eslint": "^1.8.1"
+  },
+  "overrides": {
+    "react": "$react",
+    "react-dom": "$react-dom"
   }
 }
