@@ -26,6 +26,7 @@ const StyledImage = styled.img`
 `;
 
 const CartItemDetailsContainer = styled.div`
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -47,7 +48,6 @@ const CartItemPrice = styled.p`
 
 const QuantityActionContainer = styled.div`
   display: flex;
-  gap: 5rem;
   align-items: center;
   justify-content: space-between;
 `;
