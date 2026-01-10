@@ -12,6 +12,7 @@ import { DropProvider } from './contexts/DropContext';
 import { LandingProvider } from './contexts/LandingContext';
 import { Toaster } from 'react-hot-toast';
 import { CartProvider } from './contexts/CartContext';
+import Guard from './components/Guard';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,7 +27,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
       <GlobalStyles />
-      <Toaster position="bottom-right" reverseOrder={false} />
+      <Toaster position="bottom-right" />
       <DropProvider>
         <LandingProvider>
           <CartProvider>
@@ -34,7 +35,14 @@ function App() {
               <Routes>
                 <Route element={<MainLayout />}>
                   <Route path="/" element={<Landing />} />
-                  <Route path="/checkout" element={<Checkout />} />
+                  <Route
+                    path="/checkout"
+                    element={
+                      <Guard>
+                        <Checkout />
+                      </Guard>
+                    }
+                  />
                   <Route path="/order/:id" element={<OrderReceipt />} />
                 </Route>
 

@@ -92,17 +92,22 @@ function CartDisplay({ item }) {
           <QuantityControls>
             <QuantityButton
               onClick={() => updateQuantity(item.id, item.quantity - 1)}
+              label="Decrease Quantity"
             >
               <Minus size={12} />
             </QuantityButton>
             <QuantityCount>{item.quantity}</QuantityCount>
             <QuantityButton
+              label="Increase Quantity"
               onClick={() => updateQuantity(item.id, item.quantity + 1)}
             >
               <Plus size={12} />
             </QuantityButton>
           </QuantityControls>
-          <DeleteItemButton onClick={() => removeItemFromCart(item.id)}>
+          <DeleteItemButton
+            onClick={() => removeItemFromCart(item.id)}
+            aria-label="Remove item from cart"
+          >
             <Trash2 size={14} />
           </DeleteItemButton>
         </QuantityActionContainer>

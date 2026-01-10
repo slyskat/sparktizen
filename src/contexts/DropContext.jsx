@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { calculateSecondsLeft, getStoredExpiryTime } from '../utils/helpers';
 import supabase from '../services/supabase';
 
@@ -53,7 +60,7 @@ function DropProvider({ children }) {
     [isUnlocked]
   );
 
-  async function unlockStore(passcode) {
+  const unlockStore = useCallback(async (passcode) => {
     if (!passcode || passcode.trim().length === 0) return false;
 
     try {
@@ -69,26 +76,26 @@ function DropProvider({ children }) {
       if (data === true) {
         const now = Date.now();
         const futureExpiry = now + DURATION_PER_SESSION * 1000;
-
         localStorage.setItem(STORAGE_KEY, futureExpiry.toString());
 
         setIsUnlocked(true);
         setIsExpired(false);
         return true;
       }
+
       return false;
     } catch (err) {
       console.error('Unlock Error:', err);
       return false;
     }
-  }
+  }, []);
 
-  function resetSession() {
+  const resetSession = useCallback(() => {
     localStorage.removeItem(STORAGE_KEY);
     setIsUnlocked(false);
-    setTimeLeft(0);
     setIsExpired(false);
-  }
+    setTimeLeft(0);
+  }, []);
 
   useEffect(
     function () {
@@ -110,20 +117,19 @@ function DropProvider({ children }) {
     },
     [isUnlocked, isExpired]
   );
-  return (
-    <DropContext.Provider
-      value={{
-        isUnlocked,
-        timeLeft,
-        isExpired,
-        unlockStore,
-        resetSession,
-        isWarning,
-      }}
-    >
-      {children}
-    </DropContext.Provider>
+
+  const value = useMemo(
+    () => ({
+      isUnlocked,
+      timeLeft,
+      isExpired,
+      unlockStore,
+      resetSession,
+      isWarning,
+    }),
+    [isUnlocked, timeLeft, isExpired, unlockStore, resetSession, isWarning]
   );
+  return <DropContext.Provider value={value}>{children}</DropContext.Provider>;
 }
 
 function useDrop() {

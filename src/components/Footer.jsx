@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 import { shake } from '../styles/Animations';
 import { useDrop } from '../contexts/DropContext';
 import { Subtitle } from '../ui/Subtitle';
-import { ArrowRight, Lock } from 'lucide-react';
+import { ArrowRight, Eye, EyeOff, Lock } from 'lucide-react';
 import { useLanding } from '../contexts/LandingContext';
 import toast from 'react-hot-toast';
 import { toastStyle } from '../utils/toastStyle';
@@ -39,8 +39,6 @@ const FormContainer = styled.div`
 `;
 
 const OracleForm = styled.form`
-  /* border-bottom: 1px solid hsl(var(--border)); */
-  /* width: 100%; */
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -59,6 +57,30 @@ const OracleForm = styled.form`
     `}
   @media (min-width: 640px) {
     padding-bottom: 1rem;
+  }
+`;
+
+const PasswordInputContainer = styled.div`
+  position: relative;
+  flex: 1;
+`;
+
+const ShowPasswordButton = styled.button`
+  all: unset;
+  position: absolute;
+  right: 0;
+  top: 0.5rem;
+  color: hsl(var(--text-secondary));
+  transition: color 0.3s ease;
+  padding: 0.25rem;
+  transition: color 0.3s ease-in-out;
+
+  &:hover {
+    color: hsl(var(--text-primary));
+  }
+
+  svg {
+    background: transparent;
   }
 `;
 
@@ -191,7 +213,7 @@ const EmailInput = styled(Input)`
 
 const AccessButton = styled.button`
   background: hsl(var(--text-primary));
-  color: hsl(var(--bg-background));
+  color: hsl(var(--bg-primary));
   border: none;
   padding: 0.75rem 2rem;
   font-size: 0.75rem;
@@ -217,6 +239,7 @@ function Footer() {
   const { unlockStore } = useDrop();
   const { email, setEmail, passcode, setPasscode, setIsShaking } = useLanding();
   const [isChecking, setIsChecking] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   async function submitPasscode(e) {
     e.preventDefault();
@@ -277,14 +300,28 @@ function Footer() {
         </Subtitle>
 
         <OracleForm onSubmit={submitPasscode}>
-          <Input
-            type="password"
-            autoComplete="off"
-            placeholder="ENTER PASSWORD"
-            id="password"
-            value={passcode}
-            onChange={(e) => setPasscode(e.target.value)}
-          />
+          <PasswordInputContainer>
+            <Input
+              type={showPassword ? 'text' : 'password'}
+              autoComplete="off"
+              placeholder="ENTER PASSWORD"
+              id="password"
+              value={passcode}
+              onChange={(e) => setPasscode(e.target.value)}
+              disabled={isChecking}
+            />
+            <ShowPasswordButton
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? 'Hide Password' : 'Show Password'}
+            >
+              {showPassword ? (
+                <EyeOff size={14} strokeWidth={1.5} />
+              ) : (
+                <Eye size={14} strokeWidth={1.5} />
+              )}
+            </ShowPasswordButton>
+          </PasswordInputContainer>
           <SubmitButton type="submit" aria-label="Submit code">
             <ArrowRight size={18} strokeWidth={1.5} />
           </SubmitButton>

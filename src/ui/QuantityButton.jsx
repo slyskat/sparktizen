@@ -9,8 +9,12 @@ const StyledButton = styled.button`
   }
 `;
 
-function QuantityButton({ children, onClick }) {
-  return <StyledButton onClick={onClick}>{children}</StyledButton>;
+function QuantityButton({ children, onClick, label }) {
+  return (
+    <StyledButton onClick={onClick} aria-label={label}>
+      {children}
+    </StyledButton>
+  );
 }
 
 export default QuantityButton;

@@ -10,10 +10,15 @@ import { toastStyle } from '../utils/toastStyle';
 const Container = styled.div`
   position: relative;
   aspect-ratio: 3/4;
+  width: 300px;
   background-color: hsl(var(--bg-secondary));
   overflow: hidden;
   border: 1px solid #262626;
   cursor: ${(props) => (props.$isAvailable ? 'pointer' : 'not-allowed')};
+
+  @media (min-width: 640px) {
+    width: 100%;
+  }
 `;
 
 const ProductImage = styled.img`
@@ -87,7 +92,7 @@ const CenterOverlay = styled.div`
   opacity: 0;
   transition: opacity 0.3s ease;
 
-  ${Container}:hover & {
+  ${Container}:hover && {
     opacity: 1;
   }
 `;
@@ -162,7 +167,7 @@ const AddButtonContainer = styled.div`
   transition: transform 300ms ease-out;
   z-index: 10;
 
-  ${Container}:hover & {
+  ${Container}:hover &&, ${Container}:focus-within && {
     transform: translateY(0);
   }
 `;
@@ -215,10 +220,15 @@ function ProductCard({ product, important }) {
   return (
     <Container $isAvailable={isAvailable}>
       <ProductImage
-        src={getOptimizedImageUrl(product.image, 400)}
+        srcSet={`${getOptimizedImageUrl(product.image, 300)} 300w,
+    ${getOptimizedImageUrl(product.image, 640)} 500w,
+    ${getOptimizedImageUrl(product.image, 800)} 800w`}
+        sizes="(max-width: 1024px) 50vw, 300px"
+        src={getOptimizedImageUrl(product.image, 300)}
         alt={product.name}
         $status={status}
         loading={important ? 'eager' : 'lazy'}
+        fetchPriority={important ? 'high' : 'auto'}
       />
       <BottomGradient>
         <ProductName>{product.name}</ProductName>

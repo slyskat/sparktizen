@@ -36,37 +36,6 @@ const GridContainer = styled.div`
   }
 `;
 
-// const products = [
-//   {
-//     id: 1,
-//     name: 'TACTICAL VEST',
-//     price: 320,
-//     image: '/placeholder.svg',
-//     status: 'AVAILABLE',
-//   },
-//   {
-//     id: 2,
-//     name: 'GRAPHIC JERSEY',
-//     price: 180,
-//     image: '/placeholder.svg',
-//     status: 'AVAILABLE',
-//   },
-//   {
-//     id: 3,
-//     name: 'CARGO PANTS',
-//     price: 240,
-//     image: '/placeholder.svg',
-//     status: 'AVAILABLE',
-//   },
-//   {
-//     id: 4,
-//     name: 'UTILITY HOODIE',
-//     price: 280,
-//     image: '/placeholder.svg',
-//     status: 'AVAILABLE',
-//   },
-// ];
-
 function ProductDisplay() {
   const { isUnlocked } = useDrop();
   const { data: products } = useQuery({

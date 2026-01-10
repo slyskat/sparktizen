@@ -193,7 +193,10 @@ function CartModal() {
       <Modal $isOpen={isCartOpen} onClick={(e) => e.stopPropagation()}>
         <Header>
           <Title>YOUR CART</Title>
-          <CloseButton onClick={() => setIsCartOpen(false)}>
+          <CloseButton
+            onClick={() => setIsCartOpen(false)}
+            aria-label="Close Cart"
+          >
             <X size={24} strokeWidth={1.5} />
           </CloseButton>
         </Header>
