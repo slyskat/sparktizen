@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import NavBar from '../components/NavBar';
 import { grain } from '../styles/Animations';
 import CartModal from '../components/CartModal';
+import { useCart } from '../contexts/CartContext';
 
 const Container = styled.div`
   position: relative;
@@ -34,6 +35,7 @@ const Main = styled.main`
 `;
 
 function MainLayout() {
+  const { isCartOpen } = useCart();
   return (
     <Container>
       <BGNoise />
@@ -41,7 +43,7 @@ function MainLayout() {
       <Main>
         <Outlet />
       </Main>
-      <CartModal />
+      {isCartOpen && <CartModal />}
     </Container>
   );
 }

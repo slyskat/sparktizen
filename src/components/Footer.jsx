@@ -69,11 +69,11 @@ const ShowPasswordButton = styled.button`
   all: unset;
   position: absolute;
   right: 0;
-  top: 0.5rem;
   color: hsl(var(--text-secondary));
   transition: color 0.3s ease;
   padding: 0.25rem;
   transition: color 0.3s ease-in-out;
+  cursor: pointer;
 
   &:hover {
     color: hsl(var(--text-primary));

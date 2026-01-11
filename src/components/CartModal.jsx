@@ -7,6 +7,7 @@ import { useDrop } from '../contexts/DropContext';
 import SessionTimer from './SessionTimer';
 import { useNavigate } from 'react-router-dom';
 import { formatCurrency } from '../utils/helpers';
+import { useEffect, useRef } from 'react';
 
 const Overlay = styled.div`
   position: fixed;
@@ -182,15 +183,65 @@ function CartModal() {
   const { isWarning } = useDrop();
   const isDisabled = cart.length === 0;
   const navigate = useNavigate();
+  const modalRef = useRef(null);
 
   function proceedToCheckoout() {
     setIsCartOpen(false);
+
     navigate('/checkout');
   }
 
+  useEffect(
+    function () {
+      const focusableContent = modalRef.current?.querySelectorAll(
+        'button, [tabindex]:not([tabindex="-1"])'
+      );
+
+      const modalElement = modalRef.current;
+
+      if (focusableContent.length === 0) return;
+
+      const firstElement = focusableContent[0];
+      const lastElement = focusableContent[focusableContent.length - 1];
+
+      firstElement.focus();
+
+      function handleTabKey(e) {
+        if (e.key !== 'Tab') {
+          return;
+        }
+
+        if (e.shiftKey && document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        } else if (!e.shiftKey && document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+
+      modalRef.current?.addEventListener('keydown', handleTabKey);
+
+      return () => {
+        modalElement.removeEventListener('keydown', handleTabKey);
+      };
+    },
+    [isCartOpen]
+  );
+
   return createPortal(
-    <Overlay $isOpen={isCartOpen} onClick={() => setIsCartOpen(false)}>
-      <Modal $isOpen={isCartOpen} onClick={(e) => e.stopPropagation()}>
+    <Overlay
+      $isOpen={isCartOpen}
+      onClick={() => setIsCartOpen(false)}
+      aria-modal="true"
+      role="dialog"
+    >
+      <Modal
+        $isOpen={isCartOpen}
+        onClick={(e) => e.stopPropagation()}
+        ref={modalRef}
+        tabIndex="-1"
+      >
         <Header>
           <Title>YOUR CART</Title>
           <CloseButton
