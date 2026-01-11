@@ -61,7 +61,6 @@ function DropProvider({ children }) {
   );
 
   const unlockStore = useCallback(async (passcode) => {
-    console.time('unlock-timer');
     if (!passcode || passcode.trim().length === 0) return false;
 
     try {
@@ -81,7 +80,7 @@ function DropProvider({ children }) {
 
         setIsUnlocked(true);
         setIsExpired(false);
-        console.timeEnd('unlock-timer');
+
         return true;
       }
 

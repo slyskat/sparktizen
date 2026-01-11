@@ -42,6 +42,9 @@ const Modal = styled.div`
   background-color: hsl(var(--bg-primary));
   transition: transform 0.3s ease-in-out;
 
+  display: flex;
+  flex-direction: column;
+
   ${(props) => {
     if (props.$isOpen) {
       return css`
@@ -52,7 +55,7 @@ const Modal = styled.div`
         transform: translateX(100%);
       `;
     }
-  }}
+  }};
 `;
 
 const Header = styled.div`
@@ -82,14 +85,13 @@ const CartItems = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  overflow: auto;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  padding: 1rem;
 `;
 
 const StyledFooter = styled.footer`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
   padding: 1rem;
   background-color: hsl(var(--border));
   border-top: 1px solid hsl(var(--border));

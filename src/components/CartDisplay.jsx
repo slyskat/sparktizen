@@ -10,6 +10,7 @@ const ItemContainer = styled.div`
   gap: 1rem;
   background-color: hsl(var(--bg-secondary));
   overflow-y: hidden;
+  flex-shrink: 0;
 `;
 
 const Thumbnail = styled.div`
@@ -41,7 +42,7 @@ const CartItemLabel = styled.h3`
 
 const CartItemPrice = styled.p`
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0%.7rem;
+  font-size: 0.7rem;
   color: hsl(var(--text-secondary));
   margin: 0.25rem;
 `;
@@ -69,7 +70,8 @@ const QuantityCount = styled.span`
 const DeleteItemButton = styled.button`
   padding: 0.25rem;
   color: hsl(var(--text-secondary));
-  flex &:hover {
+
+  &:hover {
     color: hsl(0 80% 50%);
   }
 `;

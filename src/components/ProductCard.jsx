@@ -10,7 +10,7 @@ import { toastStyle } from '../utils/toastStyle';
 const Container = styled.div`
   position: relative;
   aspect-ratio: 3/4;
-  width: 300px;
+  width: 100%;
   background-color: hsl(var(--bg-secondary));
   overflow: hidden;
   border: 1px solid #262626;
@@ -24,6 +24,7 @@ const Container = styled.div`
 const ProductImage = styled.img`
   width: 100%;
   height: 100%;
+  display: block;
   object-fit: cover;
   transition: all 0.5s ease;
 
