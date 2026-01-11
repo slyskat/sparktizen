@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import QuantityButton from '../ui/QuantityButton';
 import { useCart } from '../contexts/CartContext';
 import { formatCurrency } from '../utils/helpers';
+import { getOptimizedImageUrl } from '../services/apiProducts';
 
 const ItemContainer = styled.div`
   display: flex;
@@ -81,7 +82,11 @@ function CartDisplay({ item }) {
   return (
     <ItemContainer>
       <Thumbnail>
-        <StyledImage src={item.image} alt={item.name} />
+        <StyledImage
+          src={getOptimizedImageUrl(item.image, 150)}
+          loading="lazy"
+          alt={item.name}
+        />
       </Thumbnail>
 
       <CartItemDetailsContainer>
