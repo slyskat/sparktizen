@@ -34,7 +34,7 @@ const IconWrapper = styled.div`
 `;
 
 const Title = styled.h1`
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-logo);
   font-size: 2.25rem;
   letter-spacing: -0.025em;
   margin-bottom: 0.75rem;
@@ -166,7 +166,7 @@ const TotalRow = styled.div`
 `;
 
 const GrandTotalRow = styled(TotalRow)`
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-logo);
   font-size: 1.25rem;
   padding-top: 0.75rem;
   margin-top: 0.5rem;

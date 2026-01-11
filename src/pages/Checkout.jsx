@@ -134,7 +134,7 @@ const CheckoutForm = styled.form`
 `;
 
 const SectionHeader = styled.h2`
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-logo);
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
   display: flex;
@@ -188,7 +188,7 @@ const SummaryCard = styled.div`
 `;
 
 const SummaryCardHeader = styled.h2`
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-logo);
   font-size: 2rem;
   margin-bottom: 1.5rem;
 `;
@@ -260,7 +260,7 @@ const BillingHeader = styled.span`
 const TotalContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-logo);
   font-size: 1rem;
   padding-top: 0.5rem;
   border-top: 1px solid hsl(var(--border));

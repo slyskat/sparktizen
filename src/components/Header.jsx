@@ -26,7 +26,7 @@ const LockContainer = styled.div`
 `;
 
 const Title = styled.h1`
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-logo);
   font-size: clamp(3rem, 15vw, 12rem);
   line-height: 0.85;
   letter-spacing: -0.03em;

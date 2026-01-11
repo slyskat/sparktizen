@@ -13,6 +13,7 @@ import { LandingProvider } from './contexts/LandingContext';
 import { Toaster } from 'react-hot-toast';
 import { CartProvider } from './contexts/CartContext';
 import Guard from './components/Guard';
+import SessionTracker from './components/SessionTracker';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,6 +33,7 @@ function App() {
         <LandingProvider>
           <CartProvider>
             <BrowserRouter>
+              <SessionTracker />
               <Routes>
                 <Route element={<MainLayout />}>
                   <Route path="/" element={<Landing />} />

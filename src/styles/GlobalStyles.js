@@ -1,7 +1,17 @@
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyles = createGlobalStyle`
+@font-face {
+    font-family: 'Anton';
+    src: url('/fonts/Anton/anton.woff2') format('woff2'); 
+    font-weight: 400;
+    font-style: normal;
+    font-display: block; 
+  }
+
+
 :root{
+  --font-logo: 'Anton', sans-serif;
   --bg-primary: 0 0% 0%;
   --bg-secondary:0 0% 15%;
 

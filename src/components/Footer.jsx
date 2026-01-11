@@ -159,7 +159,7 @@ const WaitlistHeader = styled.div`
 `;
 
 const WaitlistTitle = styled.h2`
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-logo);
   font-size: 1.25rem;
   line-height: 1.75rem;
   letter-spacing: -0.025em;

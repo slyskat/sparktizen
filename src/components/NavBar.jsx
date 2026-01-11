@@ -30,7 +30,7 @@ const FlexContainer = styled.div`
 `;
 
 const Logo = styled.a`
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-logo);
   color: hsl(var(--text-primary));
   font-size: 1.25rem;
   line-height: 1.75rem;

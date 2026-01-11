@@ -68,7 +68,7 @@ const Header = styled.div`
 `;
 
 const Title = styled.h2`
-  font-family: 'Anton', sans-serif;
+  font-family: var(--font-logo);
   font-size: 2rem;
   color: hsl(var(--text-primary));
 `;
