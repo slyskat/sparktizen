@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { getProducts } from '../services/apiProducts';
 import ProductCard from './ProductCard';
 import { useDrop } from '../contexts/DropContext';
+import ProductCardSkeleton from './ProductCardSkeleton';
 
 const StyledSection = styled.section`
   width: 100%;
@@ -38,7 +39,7 @@ const GridContainer = styled.div`
 
 function ProductDisplay() {
   const { isUnlocked } = useDrop();
-  const { data: products } = useQuery({
+  const { data: products, isLoading } = useQuery({
     queryKey: ['products'],
     queryFn: getProducts,
   });
@@ -48,13 +49,17 @@ function ProductDisplay() {
   return (
     <StyledSection>
       <GridContainer>
-        {displayedProducts?.map((product, index) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            important={index < 4}
-          />
-        ))}
+        {isLoading
+          ? Array.from({ length: 4 }).map((_, i) => (
+              <ProductCardSkeleton key={i} />
+            ))
+          : displayedProducts?.map((product, index) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                important={index < 4}
+              />
+            ))}
       </GridContainer>
     </StyledSection>
   );

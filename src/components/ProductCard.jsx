@@ -60,7 +60,7 @@ const ProductImage = styled.img`
   }}
 `;
 
-const BottomGradient = styled.div`
+const InfoContainer = styled.div`
   position: absolute;
   bottom: 0;
   left: 0;
@@ -231,12 +231,12 @@ function ProductCard({ product, important }) {
         loading={important ? 'eager' : 'lazy'}
         fetchPriority={important ? 'high' : 'auto'}
       />
-      <BottomGradient>
+      <InfoContainer>
         <ProductName>{product.name}</ProductName>
         {isAvailable && (
           <ProductPrice>{formatCurrency(product.price)}</ProductPrice>
         )}
-      </BottomGradient>
+      </InfoContainer>
 
       {isLocked && (
         <CenterOverlay>

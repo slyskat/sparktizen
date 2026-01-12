@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 import { Lock } from 'lucide-react';
-import { lockPulse, textFlicker } from '../styles/Animations';
+import { pulse, textFlicker } from '../styles/Animations';
 
 import { useDrop } from '../contexts/DropContext';
 import { Subtitle } from '../ui/Subtitle';
@@ -21,7 +21,7 @@ const LockContainer = styled.div`
   animation: ${(props) =>
     !props.$isUnlocked &&
     css`
-      ${lockPulse} 2s infinite
+      ${pulse} 2s infinite
     `};
 `;
 

@@ -1,6 +1,6 @@
 import { keyframes } from 'styled-components';
 
-export const lockPulse = keyframes`
+export const pulse = keyframes`
   0% {
     opacity: 0.4;
   }
