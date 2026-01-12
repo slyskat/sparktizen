@@ -45,10 +45,13 @@ const CartLabel = styled.span`
 `;
 
 function CartBag() {
-  const { setIsCartOpen, cart } = useCart();
-  const cartCount = cart.length;
+  const { setIsCartOpen, cartCount } = useCart();
+
   return (
-    <CartButton onClick={() => setIsCartOpen((isCartOpen) => !isCartOpen)}>
+    <CartButton
+      onClick={() => setIsCartOpen((isCartOpen) => !isCartOpen)}
+      aria-label="cart"
+    >
       <ShoppingBag size={20} strokeWidth={1.5} />
       <CartLabel>Cart</CartLabel>
       {cartCount > 0 && <CartCount>{cartCount}</CartCount>}

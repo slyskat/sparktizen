@@ -264,7 +264,7 @@ function ProductCard({ product, important }) {
 
       {isAvailable && (
         <AddButtonContainer>
-          <AddButton onClick={handleClick}>
+          <AddButton onClick={handleClick} aria-label="Add to Cart">
             <ShoppingBag size={14} strokeWidth={1.5} />
             ADD TO CART
           </AddButton>

@@ -181,7 +181,7 @@ const CheckoutButton = styled.button`
 `;
 
 function CartModal() {
-  const { isCartOpen, setIsCartOpen, cart, getSubtotal } = useCart();
+  const { isCartOpen, setIsCartOpen, cart, subtotal } = useCart();
   const { isWarning } = useDrop();
   const isDisabled = cart.length === 0;
   const navigate = useNavigate();
@@ -195,6 +195,7 @@ function CartModal() {
 
   useEffect(
     function () {
+      const lastFocusedElement = document.activeElement;
       const focusableContent = modalRef.current?.querySelectorAll(
         'button, [tabindex]:not([tabindex="-1"])'
       );
@@ -226,6 +227,7 @@ function CartModal() {
 
       return () => {
         modalElement.removeEventListener('keydown', handleTabKey);
+        lastFocusedElement.focus();
       };
     },
     [isCartOpen]
@@ -268,7 +270,7 @@ function CartModal() {
 
           <SubtotalWrapper>
             <SubtotalHeader>Subtotal</SubtotalHeader>
-            <Subtotal>{formatCurrency(getSubtotal())}</Subtotal>
+            <Subtotal>{formatCurrency(subtotal)}</Subtotal>
           </SubtotalWrapper>
 
           <CheckoutButton $isDisabled={isDisabled} onClick={proceedToCheckoout}>
