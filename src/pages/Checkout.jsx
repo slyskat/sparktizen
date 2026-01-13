@@ -300,7 +300,7 @@ function Checkout() {
   const navigate = useNavigate();
   const { isWarning, isExpired } = useDrop();
   const shippingFee = 1500;
-  const total = subTotal + shippingFee;
+  const total = subtotal + shippingFee;
   const totalInKobo = total * 100;
 
   const [reference] = useState(() => new Date().getTime().toString());
@@ -357,7 +357,7 @@ function Checkout() {
       navigate(`/order/${reference.reference}`, {
         state: {
           cart,
-          subtotal: subTotal,
+          subtotal,
           shipping: shippingFee,
           total,
           shippingAddress: {
