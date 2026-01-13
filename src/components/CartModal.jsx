@@ -187,7 +187,7 @@ function CartModal() {
   const navigate = useNavigate();
   const modalRef = useRef(null);
 
-  function proceedToCheckoout() {
+  function proceedToCheckout() {
     setIsCartOpen(false);
 
     navigate('/checkout');
@@ -273,7 +273,7 @@ function CartModal() {
             <Subtotal>{formatCurrency(subtotal)}</Subtotal>
           </SubtotalWrapper>
 
-          <CheckoutButton $isDisabled={isDisabled} onClick={proceedToCheckoout}>
+          <CheckoutButton $isDisabled={isDisabled} onClick={proceedToCheckout}>
             Proceed to checkout
           </CheckoutButton>
         </StyledFooter>
