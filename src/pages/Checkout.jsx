@@ -296,12 +296,10 @@ const PayButton = styled.button`
 `;
 
 function Checkout() {
-  const { cart, getSubtotal, clearCart } = useCart();
+  const { cart, subtotal, clearCart } = useCart();
   const navigate = useNavigate();
   const { isWarning, isExpired } = useDrop();
-
   const shippingFee = 1500;
-  const subTotal = getSubtotal();
   const total = subTotal + shippingFee;
   const totalInKobo = total * 100;
 
@@ -547,7 +545,7 @@ function Checkout() {
             <Total>
               <BillingContainer>
                 <BillingHeader>Subtotal</BillingHeader>
-                <span>{formatCurrency(subTotal)}</span>
+                <span>{formatCurrency(subtotal)}</span>
               </BillingContainer>
               <BillingContainer>
                 <BillingHeader>SHIPPING</BillingHeader>
