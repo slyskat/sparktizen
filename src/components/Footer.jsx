@@ -3,7 +3,6 @@ import { shake } from '../styles/Animations';
 import { useDrop } from '../contexts/DropContext';
 import { Subtitle } from '../ui/Subtitle';
 import { ArrowRight, Eye, EyeOff, Lock } from 'lucide-react';
-import { useLanding } from '../contexts/LandingContext';
 import toast from 'react-hot-toast';
 import { toastStyle } from '../utils/toastStyle';
 import { CopyrightText, CopyrightTextContainer } from '../ui/CopyrightText';
@@ -238,7 +237,9 @@ const AccessButton = styled.button`
 
 function Footer() {
   const { unlockStore } = useDrop();
-  const { email, setEmail, passcode, setPasscode, setIsShaking } = useLanding();
+  const [passcode, setPasscode] = useState('');
+  const [email, setEmail] = useState('');
+  const [isShaking, setIsShaking] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -300,7 +301,7 @@ function Footer() {
           HAVE A PASSWORD?
         </Subtitle>
 
-        <OracleForm onSubmit={submitPasscode}>
+        <OracleForm onSubmit={submitPasscode} $isShaking={isShaking}>
           <PasswordInputContainer>
             <Input
               type={showPassword ? 'text' : 'password'}

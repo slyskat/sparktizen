@@ -187,7 +187,6 @@ function CartModal() {
   const navigate = useNavigate();
   const modalRef = useRef(null);
 
- 
   useEffect(
     function () {
       const lastFocusedElement = document.activeElement;
@@ -228,12 +227,10 @@ function CartModal() {
     [isCartOpen]
   );
 
-function proceedToCheckout() {
+  function proceedToCheckout() {
     setIsCartOpen(false);
-
     navigate('/checkout');
   }
-
 
   return createPortal(
     <Overlay

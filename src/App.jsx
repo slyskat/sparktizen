@@ -9,7 +9,6 @@ import Checkout from './pages/Checkout';
 import OrderReceipt from './pages/OrderReceipt';
 import PageNotFound from './pages/PageNotFound';
 import { DropProvider } from './contexts/DropContext';
-import { LandingProvider } from './contexts/LandingContext';
 import { Toaster } from 'react-hot-toast';
 import { CartProvider } from './contexts/CartContext';
 import Guard from './components/Guard';
@@ -30,29 +29,27 @@ function App() {
       <GlobalStyles />
       <Toaster position="bottom-right" />
       <DropProvider>
-        <LandingProvider>
-          <CartProvider>
-            <BrowserRouter>
-              <SessionTracker />
-              <Routes>
-                <Route element={<MainLayout />}>
-                  <Route path="/" element={<Landing />} />
-                  <Route
-                    path="/checkout"
-                    element={
-                      <Guard>
-                        <Checkout />
-                      </Guard>
-                    }
-                  />
-                  <Route path="/order/:id" element={<OrderReceipt />} />
-                </Route>
+        <CartProvider>
+          <BrowserRouter>
+            <SessionTracker />
+            <Routes>
+              <Route element={<MainLayout />}>
+                <Route path="/" element={<Landing />} />
+                <Route
+                  path="/checkout"
+                  element={
+                    <Guard>
+                      <Checkout />
+                    </Guard>
+                  }
+                />
+                <Route path="/order/:id" element={<OrderReceipt />} />
+              </Route>
 
-                <Route path="*" element={<PageNotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </CartProvider>
-        </LandingProvider>
+              <Route path="*" element={<PageNotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </CartProvider>
       </DropProvider>
     </QueryClientProvider>
   );
