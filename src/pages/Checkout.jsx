@@ -6,7 +6,7 @@ import { useDrop } from '../contexts/DropContext';
 import SessionTimer from '../components/SessionTimer';
 import { CheckoutInput, CheckoutSelect } from '../ui/checkoutInput';
 import { formatCurrency } from '../utils/helpers';
-import { useState } from 'react';
+import { useReducer, useState } from 'react';
 import { usePaystackPayment } from 'react-paystack';
 import supabase from '../services/supabase';
 import toast from 'react-hot-toast';
@@ -295,7 +295,86 @@ const PayButton = styled.button`
   }}
 `;
 
+const initialState = {
+  phase: 'idle',
+  error: null,
+  orderId: null,
+};
+
+function reducer(state, event) {
+  switch (state.phase) {
+    case 'idle':
+      if (event.type === 'START_CHECKOUT') {
+        return { ...state, phase: 'editing' };
+      }
+      break;
+
+    case 'editing':
+      if (event.type === 'FORM_BECAME_VALID') {
+        return { ...state, phase: 'ready' };
+      }
+      if (event.type === 'SESSION_EXPIRED') {
+        return { ...state, phase: 'expired' };
+      }
+      if (event.type === 'CART_BECAME_EMPTY') {
+        return { ...state, phase: 'idle' };
+      }
+      break;
+
+    case 'ready':
+      if (event.type === 'FORM_BECAME_INVALID') {
+        return { ...state, phase: 'editing' };
+      }
+      if (event.type === 'USER_CLICKED_PAY') {
+        return { ...state, phase: 'awaiting_payment' };
+      }
+      if (event.type === 'SESSION_EXPIRED') {
+        return { ...state, phase: 'expired' };
+      }
+      break;
+
+    case 'awaiting_payment':
+      if (event.type === 'PAYMENT_SUCCEEDED') {
+        return { ...state, phase: 'processing' };
+      }
+      if (event.type === 'PAYMENT_FAILED') {
+        return { ...state, phase: 'failed' };
+      }
+      if (event.type === 'PAYMENT_CANCELLED') {
+        return { ...state, phase: 'editing' };
+      }
+      break;
+
+    case 'processing':
+      if (event.type === 'ORDER_SAVED') {
+        return { ...state, phase: 'completed', orderId: event.payload };
+      }
+      if (event.type === 'ORDER_SAVE_FAILED') {
+        return { ...state, phase: 'failed' };
+      }
+      break;
+
+    case 'failed':
+      if (event.type === 'RETRY_PAYMENT') {
+        return { ...state, phase: 'ready' };
+      }
+      break;
+
+    case 'completed':
+      break;
+
+    case 'expired':
+      break;
+  }
+
+  return state;
+}
+
 function Checkout() {
+  // This component manages the checkout lifecycle and enforces valid transitions.
+
+  const [state, dispatch] = useReducer(reducer, initialState);
+
   const { cart, subtotal, clearCart } = useCart();
   const navigate = useNavigate();
   const { isWarning, isExpired } = useDrop();
@@ -315,6 +394,7 @@ function Checkout() {
   });
 
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
 
   function handleChange(e) {
     const { name, value } = e.target;
