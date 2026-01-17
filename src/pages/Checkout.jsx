@@ -6,7 +6,7 @@ import { useDrop } from '../contexts/DropContext';
 import SessionTimer from '../components/SessionTimer';
 import { CheckoutInput, CheckoutSelect } from '../ui/checkoutInput';
 import { formatCurrency } from '../utils/helpers';
-import { useReducer, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { usePaystackPayment } from 'react-paystack';
 import supabase from '../services/supabase';
 import toast from 'react-hot-toast';
@@ -310,19 +310,19 @@ function reducer(state, event) {
       break;
 
     case 'editing':
-      if (event.type === 'FORM_BECAME_VALID') {
+      if (event.type === 'FORM_IS_VALID') {
         return { ...state, phase: 'ready' };
       }
       if (event.type === 'SESSION_EXPIRED') {
         return { ...state, phase: 'expired' };
       }
-      if (event.type === 'CART_BECAME_EMPTY') {
+      if (event.type === 'CART_IS_EMPTY') {
         return { ...state, phase: 'idle' };
       }
       break;
 
     case 'ready':
-      if (event.type === 'FORM_BECAME_INVALID') {
+      if (event.type === 'FORM_IS_INVALID') {
         return { ...state, phase: 'editing' };
       }
       if (event.type === 'USER_CLICKED_PAY') {
@@ -393,14 +393,6 @@ function Checkout() {
     country: 'NG',
   });
 
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [isDisabled, setIsDisabled] = useState(false);
-
-  function handleChange(e) {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  }
-
   const config = {
     reference: reference,
     email: formData.email,
@@ -409,6 +401,96 @@ function Checkout() {
   };
 
   const initializePayment = usePaystackPayment(config);
+
+  useEffect(
+    function () {
+      const isValid =
+        formData.fullName &&
+        formData.email &&
+        formData.address &&
+        formData.phone &&
+        formData.city &&
+        formData.country;
+
+      if (isValid) {
+        dispatch({ type: 'FORM_IS_VALID' });
+      } else {
+        dispatch({ type: 'FORM_IS_INVALID' });
+      }
+    },
+    [formData]
+  );
+
+  useEffect(
+    function () {
+      if (isExpired) {
+        dispatch({ type: 'SESSION_EXPIRED' });
+      }
+    },
+    [isExpired]
+  );
+
+  useEffect(
+    function () {
+      if (cart.length === 0) {
+        dispatch({ type: 'CART_IS_EMPTY' });
+      }
+    },
+    [cart]
+  );
+
+  useEffect(
+    function () {
+      if (state.phase !== 'awaiting_payment') return;
+
+      initializePayment({
+        onSuccess: (reference) => {
+          dispatch({ type: 'PAYMENT_SUCCEEDED', payload: reference });
+        },
+        onCancel: () => {
+          dispatch({ type: 'PAYMENT_CANCELLED' });
+        },
+      });
+    },
+    [state.phase, initializePayment]
+  );
+
+  useEffect(
+    function () {
+      if (state.phase !== 'processing') return;
+
+      async function saveOrder() {
+        try {
+          const { data, error } = await supabase.from('orders').insert([
+            {
+              customer_name: formData.fullName,
+              customer_email: formData.email,
+              customer_phone: formData.phone,
+              customer_address: formData.address,
+              cart,
+              amount: totalInKobo,
+              payment_reference: reference.reference,
+              status: 'paid',
+            },
+          ]);
+
+          if (error) throw new Error();
+
+          dispatch({ type: 'ORDER_SAVED', payload: data.id });
+        } catch (err) {
+          dispatch({ type: 'ORDER_SAVE_FAILED', payload: err.message });
+        }
+      }
+
+      saveOrder();
+    },
+    [state.phase]
+  );
+
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  }
 
   async function onSuccess(reference) {
     console.log('onSuccess called with:', reference);
@@ -495,8 +577,6 @@ function Checkout() {
       });
       return;
     }
-
-    initializePayment({ onSuccess, onClose });
   }
 
   if (cart.length === 0)
