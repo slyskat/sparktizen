@@ -6,7 +6,7 @@ import { useDrop } from '../contexts/DropContext';
 import SessionTimer from '../components/SessionTimer';
 import { CheckoutInput, CheckoutSelect } from '../ui/checkoutInput';
 import { formatCurrency } from '../utils/helpers';
-import { useState } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
 import { usePaystackPayment } from 'react-paystack';
 import supabase from '../services/supabase';
 import toast from 'react-hot-toast';
@@ -286,7 +286,7 @@ const PayButton = styled.button`
   }
 
   ${(props) => {
-    if (props.isProcessing) {
+    if (props.$isDisabled) {
       return css`
         opacity: 0.5;
         cursor: not-allowed;
@@ -295,7 +295,71 @@ const PayButton = styled.button`
   }}
 `;
 
+const PHASES = {
+  FILLING_DETAILS: 'FILLING_DETAILS',
+  PAYING: 'PAYING',
+  SAVING_ORDER: 'SAVING_ORDER',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+};
+
+const initialState = {
+  phase: PHASES.FILLING_DETAILS,
+  error: null,
+};
+
+// PHASES =
+
+//
+
+function reducer(state, event) {
+  switch (state.phase) {
+    case PHASES.FILLING_DETAILS: {
+      if (event.type === 'START_PAYMENT') {
+        return { ...state, phase: PHASES.PAYING };
+      }
+      return state;
+    }
+
+    case PHASES.PAYING: {
+      if (event.type === 'PAYMENT_SUCCESS') {
+        return { ...state, phase: PHASES.SAVING_ORDER };
+      }
+      if (event.type === 'PAYMENT_FAILED') {
+        return { ...state, phase: PHASES.FAILED };
+      }
+      if (event.type === 'PAYMENT_CANCELLED') {
+        return { ...state, phase: PHASES.FILLING_DETAILS };
+      }
+      return state;
+    }
+
+    case PHASES.SAVING_ORDER: {
+      if (event.type === 'ORDER_SAVED') {
+        return { ...state, phase: PHASES.COMPLETED };
+      }
+      if (event.type === 'ORDER_SAVE_FAILED') {
+        return { ...state, phase: PHASES.FAILED, error: event.error };
+      }
+      return state;
+    }
+
+    case PHASES.FAILED: {
+      if (event.type === 'RETRY') {
+        return { ...state, phase: PHASES.FILLING_DETAILS };
+      }
+      return state;
+    }
+
+    case PHASES.COMPLETED:
+    default:
+      return state;
+  }
+}
+
 function Checkout() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
   const { cart, subtotal, clearCart } = useCart();
   const navigate = useNavigate();
   const { isWarning, isExpired } = useDrop();
@@ -314,12 +378,18 @@ function Checkout() {
     country: 'NG',
   });
 
-  const [isProcessing, setIsProcessing] = useState(false);
-
   function handleChange(e) {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   }
+
+  const isFormValid =
+    formData.fullName &&
+    formData.email &&
+    formData.address &&
+    formData.phone &&
+    formData.city &&
+    formData.country;
 
   const config = {
     reference: reference,
@@ -330,31 +400,71 @@ function Checkout() {
 
   const initializePayment = usePaystackPayment(config);
 
-  async function onSuccess(reference) {
-    console.log('onSuccess called with:', reference);
-    setIsProcessing(true);
+  function handlePayClick() {
+    if (!isFormValid) return;
+    dispatch({ type: 'START_PAYMENT' });
+  }
 
-    try {
-      const { error } = await supabase.from('orders').insert([
-        {
-          customer_name: formData.fullName,
-          customer_email: formData.email,
-          customer_phone: formData.phone,
-          customer_address: formData.address,
-          cart,
-          amount: totalInKobo,
-          payment_reference: reference.reference,
-          status: 'paid',
+  const hasPaymentBeingInitialized = useRef(false);
+
+  useEffect(
+    function () {
+      if (state.phase !== PHASES.PAYING) return;
+
+      if (hasPaymentBeingInitialized.current === true) return;
+      initializePayment({
+        onSuccess() {
+          dispatch({ type: 'PAYMENT_SUCCESS' });
         },
-      ]);
+        onClose() {
+          dispatch({ type: 'PAYMENT_CANCELLED' });
+        },
+      });
 
-      if (error) throw error;
+      hasPaymentBeingInitialized.current = true;
+    },
+    [state.phase, initializePayment]
+  );
 
-      console.log('ORDER CREATED. NAVIGATING...');
+  useEffect(
+    function () {
+      if (state.phase !== PHASES.SAVING_ORDER) return;
+
+      async function saveOrder() {
+        try {
+          const { error } = await supabase.from('orders').insert([
+            {
+              customer_name: formData.fullName,
+              customer_email: formData.email,
+              customer_phone: formData.phone,
+              customer_address: formData.address,
+              cart,
+              amount: totalInKobo,
+              payment_reference: reference,
+              status: 'paid',
+            },
+          ]);
+
+          if (error) throw error;
+
+          dispatch({ type: 'ORDER_SAVED' });
+        } catch (err) {
+          dispatch({ type: 'ORDER_SAVE_FAILED', error: err.message });
+        }
+      }
+
+      saveOrder();
+    },
+    [state.phase, cart, formData, totalInKobo, reference]
+  );
+
+  useEffect(
+    function () {
+      if (state.phase !== PHASES.COMPLETED) return;
 
       clearCart();
 
-      navigate(`/order/${reference.reference}`, {
+      navigate(`/order/${reference}`, {
         state: {
           cart,
           subtotal,
@@ -369,55 +479,27 @@ function Checkout() {
           },
         },
       });
+    },
+    [
+      state.phase,
+      clearCart,
+      cart,
+      formData,
+      navigate,
+      reference,
+      subtotal,
+      total,
+    ]
+  );
 
-      toast.success('PAYMENT SUCCESSFUL', {
-        style: { ...toastStyle, border: '1px solid hsl(0 0% 40% )' },
-      });
-    } catch (err) {
-      console.error('CRITICAL ERROR:', err);
-      toast.error('Payment received, but order creation failed.');
-      setIsProcessing(false);
-    }
-  }
+  useEffect(function () {
+    if (state.phase !== PHASES.FAILED) return;
 
-  function onClose() {
-    console.log('PAYSTACK CLOSED');
-    setIsProcessing(false);
-  }
+    toast.error(state.error || 'Something went wrong', toastStyle);
+  });
 
-  function handlePayClick(e) {
-    e.preventDefault();
-
-    if (isExpired) {
-      toast.error('SESSION EXPIRED', {
-        description: 'Your session has expired. Please start over.',
-        style: toastStyle,
-      });
-      return;
-    }
-
-    if (
-      !formData.fullName ||
-      !formData.email ||
-      !formData.address ||
-      !formData.phone ||
-      !formData.city
-    ) {
-      toast.error('Please fill in all shipping details.', {
-        style: { ...toastStyle, border: '1px solid hsl(0 0% 40% )' },
-      });
-      return;
-    }
-
-    if (!formData.email.includes('@')) {
-      toast.error('Please enter a valid email.', {
-        style: { ...toastStyle, border: '1px solid hsl(0 0% 40% )' },
-      });
-      return;
-    }
-
-    initializePayment({ onSuccess, onClose });
-  }
+  const systemIsBusy =
+    state.phase === PHASES.PAYING || state.phase === PHASES.SAVING_ORDER;
 
   if (cart.length === 0)
     return (
@@ -461,6 +543,7 @@ function Checkout() {
                   placeholder="FULL NAME"
                   value={formData.fullName}
                   onChange={handleChange}
+                  disabled={systemIsBusy}
                 />
                 <CheckoutInput
                   type="email"
@@ -468,6 +551,7 @@ function Checkout() {
                   placeholder="EMAIL"
                   value={formData.email}
                   onChange={handleChange}
+                  disabled={systemIsBusy}
                 />
                 <CheckoutInput
                   type="text"
@@ -475,6 +559,7 @@ function Checkout() {
                   placeholder="ADDRESS"
                   value={formData.address}
                   onChange={handleChange}
+                  disabled={systemIsBusy}
                 />
                 <CheckoutInput
                   type="tel"
@@ -482,6 +567,7 @@ function Checkout() {
                   placeholder="PHONE NUMBER"
                   value={formData.phone}
                   onChange={handleChange}
+                  disabled={systemIsBusy}
                 />
 
                 <LocationData>
@@ -491,12 +577,14 @@ function Checkout() {
                     placeholder="CITY"
                     value={formData.city}
                     onChange={handleChange}
+                    disabled={systemIsBusy}
                   />
                 </LocationData>
                 <CheckoutSelect
                   name="country"
                   value={formData.country}
                   onChange={handleChange}
+                  disabled={systemIsBusy}
                 >
                   <option value="">SELECT COUNTRY</option>
                   <option value="NG">NIGERIA</option>
@@ -513,7 +601,11 @@ function Checkout() {
               </SectionFormContainer>
             </section>
 
-            <MobileButton onClick={handlePayClick} type="button">
+            <MobileButton
+              onClick={handlePayClick}
+              disabled={!isFormValid || systemIsBusy}
+              type="button"
+            >
               PAY NOW
             </MobileButton>
           </CheckoutForm>
@@ -558,12 +650,16 @@ function Checkout() {
             </Total>
 
             <PayButton
-              disabled={isProcessing}
-              $isProcessing={isProcessing}
               onClick={handlePayClick}
               type="button"
+              disabled={!isFormValid || systemIsBusy}
+              $isDisabled={!isFormValid || systemIsBusy}
             >
-              {isProcessing ? 'PROCESSING...' : 'PAY NOW'}
+              {state.phase === PHASES.PAYING
+                ? 'PAYING...'
+                : state.phase === PHASES.SAVING_ORDER
+                  ? 'SAVING...'
+                  : 'PAY NOW'}
             </PayButton>
           </SummaryCard>
         </RightColumn>
