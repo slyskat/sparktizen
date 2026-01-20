@@ -462,6 +462,8 @@ function Checkout() {
     function () {
       if (state.phase !== PHASES.COMPLETED) return;
 
+     clearCart();
+
       navigate(`/order/${reference}`, {
         state: {
           cart,
@@ -478,7 +480,7 @@ function Checkout() {
         },
       });
 
-      clearCart();
+      
     },
     [
       state.phase,
