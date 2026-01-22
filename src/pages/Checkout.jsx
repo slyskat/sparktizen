@@ -11,6 +11,7 @@ import { usePaystackPayment } from 'react-paystack';
 import supabase from '../services/supabase';
 import toast from 'react-hot-toast';
 import { toastStyle } from '../utils/toastStyle';
+import CheckoutLoader from '../components/CheckoutLoader';
 
 const EmptyState = styled.div`
   min-height: 80vh;
@@ -314,27 +315,25 @@ const initialState = {
 
 function reducer(state, event) {
   switch (state.phase) {
-    case PHASES.FILLING_DETAILS: {
+    case PHASES.FILLING_DETAILS:
       if (event.type === 'START_PAYMENT') {
         return { ...state, phase: PHASES.PAYING };
       }
       return state;
-    }
 
-    case PHASES.PAYING: {
+    case PHASES.PAYING:
       if (event.type === 'PAYMENT_SUCCESS') {
         return { ...state, phase: PHASES.SAVING_ORDER };
       }
       if (event.type === 'PAYMENT_FAILED') {
-        return { ...state, phase: PHASES.FAILED };
+        return { ...state, phase: PHASES.FAILED, error: event.error };
       }
       if (event.type === 'PAYMENT_CANCELLED') {
         return { ...state, phase: PHASES.FILLING_DETAILS };
       }
       return state;
-    }
 
-    case PHASES.SAVING_ORDER: {
+    case PHASES.SAVING_ORDER:
       if (event.type === 'ORDER_SAVED') {
         return { ...state, phase: PHASES.COMPLETED };
       }
@@ -342,16 +341,10 @@ function reducer(state, event) {
         return { ...state, phase: PHASES.FAILED, error: event.error };
       }
       return state;
-    }
 
-    case PHASES.FAILED: {
-      if (event.type === 'RETRY') {
-        return { ...state, phase: PHASES.FILLING_DETAILS };
-      }
+    case PHASES.FAILED:
       return state;
-    }
 
-    case PHASES.COMPLETED:
     default:
       return state;
   }
@@ -361,6 +354,7 @@ function Checkout() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const { cart, subtotal, clearCart } = useCart();
+  const cartSnapshot = useRef(null);
   const navigate = useNavigate();
   const { isWarning, isExpired } = useDrop();
   const shippingFee = 1500;
@@ -462,23 +456,27 @@ function Checkout() {
     function () {
       if (state.phase !== PHASES.COMPLETED) return;
 
-      clearCart();
+      cartSnapshot.current = cart;
 
-      navigate(`/order/${reference}`, {
-        state: {
-          cart,
-          subtotal,
-          shipping: shippingFee,
-          total,
-          shippingAddress: {
-            fullName: formData.fullName,
-            email: formData.email,
-            address: formData.address,
-            city: formData.city,
-            country: formData.country,
+      console.log(cartSnapshot.current);
+
+      setTimeout(() => {
+        navigate(`/order/${reference}`, {
+          state: {
+            cart: cartSnapshot.current,
+            subtotal,
+            shipping: shippingFee,
+            total,
+            shippingAddress: {
+              fullName: formData.fullName,
+              email: formData.email,
+              address: formData.address,
+              city: formData.city,
+              country: formData.country,
+            },
           },
-        },
-      });
+        });
+      }, 500);
     },
     [
       state.phase,
@@ -500,6 +498,8 @@ function Checkout() {
 
   const systemIsBusy =
     state.phase === PHASES.PAYING || state.phase === PHASES.SAVING_ORDER;
+
+  if (state.phase === PHASES.COMPLETED) return <CheckoutLoader />;
 
   if (cart.length === 0)
     return (

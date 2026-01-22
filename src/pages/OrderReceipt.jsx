@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { CheckCircle } from 'lucide-react';
 import { formatCurrency } from '../utils/helpers';
+import { useEffect } from 'react';
+import { useCart } from '../contexts/CartContext';
 
 const Container = styled.div`
   max-width: 42rem;
@@ -214,8 +216,16 @@ function OrderReceipt() {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const { clearCart } = useCart();
 
   const orderData = location.state;
+
+  useEffect(
+    function () {
+      clearCart();
+    },
+    [clearCart]
+  );
 
   if (!orderData) {
     return (

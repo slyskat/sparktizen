@@ -85,3 +85,14 @@ export const shake = keyframes`
     transform: translateX(6px);
   }
 `;
+
+export const dotPulse = keyframes`
+  0%, 80%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+`;

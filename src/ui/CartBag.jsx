@@ -27,8 +27,8 @@ const CartCount = styled.span`
   justify-content: center;
   background: hsl(var(--text-primary));
   color: hsl(var(--bg-primary));
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
 `;
 
 const CartLabel = styled.span`
@@ -52,7 +52,7 @@ function CartBag() {
       onClick={() => setIsCartOpen((isCartOpen) => !isCartOpen)}
       aria-label="cart"
     >
-      <ShoppingBag size={20} strokeWidth={1.5} />
+      <ShoppingBag size={25} strokeWidth={1.5} />
       <CartLabel>Cart</CartLabel>
       {cartCount > 0 && <CartCount>{cartCount}</CartCount>}
     </CartButton>
