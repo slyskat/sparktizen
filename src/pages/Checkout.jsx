@@ -456,14 +456,10 @@ function Checkout() {
     function () {
       if (state.phase !== PHASES.COMPLETED) return;
 
-      cartSnapshot.current = cart;
-
-      console.log(cartSnapshot.current);
-
       setTimeout(() => {
         navigate(`/order/${reference}`, {
           state: {
-            cart: cartSnapshot.current,
+            cart,
             subtotal,
             shipping: shippingFee,
             total,
